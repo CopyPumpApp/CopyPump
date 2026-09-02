@@ -1,6 +1,6 @@
 # CopyPump
 
-**Non-custodial autonomous trading on Solana.**
+**Building non-custodial autonomous trading infrastructure on Solana.**
 
 CopyPump is building a trading platform where users retain custody while automation operates inside explicit capital, risk, wallet and policy limits.
 
@@ -56,7 +56,7 @@ AI is not intended to sign transactions, submit transactions, grant wallet permi
 
 The current engineering phase is focused on proving the non-custodial execution and safety model on Solana Devnet before any production Mainnet deployment.
 
-Public technical materials will be added progressively as they pass a separate release review.
+Public technical materials and selected source code will be added progressively as they pass security, privacy and licensing review.
 
 ## Documentation
 
@@ -69,14 +69,12 @@ Public technical materials will be added progressively as they pass a separate r
 
 ## Public channels
 
-- X: https://x.com/copypumpai
-- YouTube: https://youtube.com/@copypumpapp
-- Pump.fun: https://pump.fun/profile/CopyPumpApp
+- X: https://x.com/CopyPumpAI
 - Contact: copypumphq@gmail.com
 
 ## Source availability
 
-This public repository is intended to be a curated technical surface. The complete private engineering history, operational evidence and internal automation material are not published wholesale.
+This repository is a curated public technical surface. The complete private engineering history, operational evidence and internal automation material are not published wholesale.
 
 Selected source code and tests may be added after security, privacy and licensing review.
 
