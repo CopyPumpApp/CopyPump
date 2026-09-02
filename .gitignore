@@ -1,0 +1,35 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Dependencies and build output
+node_modules/
+dist/
+coverage/
+
+# Runtime and local data
+data/
+logs/
+artifacts/
+evidence/
+*.log
+
+# Archives and generated packages
+*.zip
+*.tar
+*.tgz
+
+# Local tooling / agent metadata
+.codex/
+.agents/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
