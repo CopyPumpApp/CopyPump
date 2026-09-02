@@ -1,6 +1,6 @@
 # CopyPump Architecture
 
-> Public-release draft. This document describes the intended high-level architecture without exposing private operational details.
+This document describes CopyPump's intended high-level architecture without exposing private operational details.
 
 CopyPump is being designed as a non-custodial trading system on Solana. The user retains wallet custody while the application evaluates on-chain activity and prepares trading actions inside explicit policy and risk boundaries.
 
@@ -32,7 +32,7 @@ The frontend presents wallet state, strategy controls, market/smart-money observ
 
 ### 2. Application backend
 
-The backend owns authoritative application contracts and coordinates:
+The backend coordinates authoritative application state and contracts for areas including:
 
 - runtime state;
 - signal qualification;
