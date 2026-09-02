@@ -1,6 +1,6 @@
 # CopyPump Security Model
 
-> Public-release draft. CopyPump is under active development and is not presented here as production-ready.
+CopyPump is under active development and is not presented as production-ready.
 
 ## Custody boundary
 
@@ -86,4 +86,4 @@ Do not publish exploitable details in a public issue before maintainers have had
 
 ## Status
 
-This document describes intended security boundaries. Public release does not imply that all production-readiness work has been completed.
+This document describes intended security boundaries. Public availability does not imply that all production-readiness work has been completed.
