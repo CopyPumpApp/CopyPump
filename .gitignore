@@ -2,22 +2,42 @@
 .env
 .env.*
 !.env.example
+.envrc
+.npmrc
 *.pem
 *.key
 *.p12
 *.pfx
+*.crt
+*.cer
+*-keypair.json
+keypair*.json
+wallet*.json
 
 # Dependencies and build output
 node_modules/
 dist/
 coverage/
+.cache/
 
 # Runtime and local data
 data/
 logs/
 artifacts/
 evidence/
+grant/
 *.log
+*.db
+*.sqlite
+*.sqlite3
+
+# Browser / QA state
+playwright-report/
+test-results/
+blob-report/
+.auth/
+browser-profile/
+storageState*.json
 
 # Archives and generated packages
 *.zip
