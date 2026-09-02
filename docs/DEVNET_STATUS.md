@@ -1,37 +1,43 @@
 # CopyPump Devnet Status
 
-> Public-release draft. **Refresh this document against the latest verification run immediately before publication.**
+> **Current public status:** technical alpha / Solana Devnet hardening.
 
-## Current public-safe status
+CopyPump is validating its execution and safety model before any production Mainnet deployment. The project should not be treated as ready for real-funds trading.
 
-CopyPump is in **technical alpha / Solana Devnet hardening**.
+## What is currently supported by engineering evidence
 
-The project is validating the execution and safety model before any production Mainnet deployment. The public status must not imply that real-funds trading is ready.
-
-## What the repository evidence supports
-
-The inspected engineering documents show that the project has implemented or is actively validating boundaries around:
+The inspected engineering work supports active implementation and validation of boundaries around:
 
 - wallet authentication and wallet-controlled signing;
 - deterministic Risk/Policy checks;
 - explicit execution preparation and confirmation flows;
 - smart-money signal qualification;
 - position lifecycle handling;
-- transaction confirmation / reconciliation;
+- transaction confirmation and reconciliation;
 - PnL and fee accounting;
 - audit evidence;
 - failure containment;
 - Devnet/testnet verification.
 
+## End-to-end Devnet proof
+
+CopyPump's target execution lifecycle is:
+
+```text
+BUY → POSITION → PARTIAL SELL → FULL SELL
+```
+
+A complete real Devnet lifecycle should be considered publicly verified only when the corresponding transaction signatures, confirmation/reconciliation results and accounting evidence have been captured and reviewed. Simulated or paper execution is not presented as equivalent evidence.
+
 ## Mainnet status
 
 **Not ready / intentionally blocked.**
 
-Historical engineering evidence lists unresolved production-readiness items and explicitly requires the Mainnet guard to remain in place until the required safety work is closed and independently verified.
+Production Mainnet execution remains outside the current public readiness claim. Mainnet should remain blocked until the required safety work is complete and independently reverified.
 
-## What a public reviewer should understand
+## Evidence standard
 
-A passing build or an attractive UI is not used as proof of financial readiness. CopyPump's release process distinguishes between:
+CopyPump distinguishes between:
 
 - code/build success;
 - runtime correctness;
@@ -39,14 +45,4 @@ A passing build or an attractive UI is not used as proof of financial readiness.
 - real Devnet execution evidence;
 - production Mainnet readiness.
 
-These are separate gates.
-
-## Publication checklist for this page
-
-Before copying this file to the future public repository:
-
-1. replace this draft status with the latest verified Devnet checkpoint;
-2. include only tests/evidence that were actually run;
-3. do not report simulated or paper execution as real Devnet execution;
-4. preserve any current blocker or `USER_ACTION_REQUIRED` state;
-5. do not claim Mainnet readiness unless the production safety gates have actually been closed and reverified.
+These are separate gates. A passing build, attractive UI, simulation or AI assessment is not by itself proof of financial readiness.
