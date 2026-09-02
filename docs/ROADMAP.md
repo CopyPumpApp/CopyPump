@@ -1,6 +1,6 @@
 # CopyPump Roadmap
 
-> Public-release draft. This roadmap describes direction, not guaranteed dates or investment promises.
+This roadmap describes direction, not guaranteed dates, returns, fundraising outcomes or investment promises.
 
 ## Phase 1 — Devnet execution truth
 
@@ -28,25 +28,25 @@ Focus:
 
 - durable idempotency and execution lifecycle state;
 - fail-closed recovery behavior;
-- stronger confirmation / evidence requirements;
+- stronger confirmation and evidence requirements;
 - global emergency-stop hierarchy;
 - tightly controlled production capital limits;
 - permission/session durability and replay protection;
 - multi-process ownership and recovery guarantees;
-- operational backup / restore / corruption testing.
+- operational backup, restore and corruption testing.
 
 ## Phase 3 — Public technical surface
 
 Goal: make CopyPump understandable and reviewable without exposing private operational material.
 
-Focus:
+Current work includes:
 
-- clean public GitHub repository;
+- maintaining this clean public GitHub repository;
 - public architecture and security documentation;
 - selected reviewed tests and source modules;
 - reproducible public verification instructions;
-- product demo / public media;
-- issue and vulnerability-reporting process.
+- product demos and public media;
+- issue and vulnerability-reporting processes.
 
 ## Phase 4 — Limited production preparation
 
