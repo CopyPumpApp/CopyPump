@@ -8,9 +8,21 @@ CopyPump is building **non-custodial autonomous trading infrastructure on Solana
 >
 > Not production-ready. Do not use with real funds.
 
+## At a glance
+
+| | |
+| --- | --- |
+| **Network** | Solana |
+| **Current stage** | Technical alpha / Devnet hardening |
+| **Wallet surface** | Phantom-focused |
+| **Custody** | User-controlled wallet signing |
+| **Automation** | Bounded authority inside explicit limits |
+| **Mainnet** | Intentionally blocked |
+| **Public repository** | Curated technical surface |
+
 ### Quick links
 
-[Architecture](docs/ARCHITECTURE.md) · [Security model](docs/SECURITY_MODEL.md) · [Devnet status](docs/DEVNET_STATUS.md) · [Roadmap](docs/ROADMAP.md) · [X](https://x.com/CopyPumpAI)
+[Project status](docs/PROJECT_STATUS.md) · [Architecture](docs/ARCHITECTURE.md) · [Security model](docs/SECURITY_MODEL.md) · [Devnet status](docs/DEVNET_STATUS.md) · [Roadmap](docs/ROADMAP.md) · [X](https://x.com/CopyPumpAI)
 
 ## Why CopyPump
 
@@ -62,22 +74,25 @@ AI is not intended to sign transactions, submit transactions, grant wallet permi
 
 The current engineering phase is focused on proving the non-custodial execution and safety model on Solana Devnet before any production Mainnet deployment.
 
-Public technical materials and selected source code will be added progressively as they pass security, privacy, and licensing review.
+The next major public proof target is a reviewed real-Devnet lifecycle with transaction confirmation, reconciliation, PnL/fee accounting, and audit evidence. Simulated or paper execution is not presented as equivalent proof.
+
+See [Public Project Status](docs/PROJECT_STATUS.md) for the current evidence boundary and next public milestones.
 
 ## What to watch
 
 This repository is the public technical surface for CopyPump. As milestones clear review, it will receive:
 
-- public architecture and security updates;
-- factual Devnet progress;
+- factual Devnet progress and evidence;
 - selected source code and tests that are safe to publish;
-- execution and reconciliation evidence suitable for public release;
-- roadmap updates tied to verified engineering progress.
+- architecture and security updates;
+- roadmap changes tied to verified engineering progress;
+- release notes for meaningful public milestones.
 
 If you're following the build, **star or watch this repository** to keep track of public milestones.
 
 ## Documentation
 
+- [Public project status](docs/PROJECT_STATUS.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Security model](docs/SECURITY_MODEL.md)
 - [Devnet status](docs/DEVNET_STATUS.md)
@@ -96,7 +111,7 @@ If you're following the build, **star or watch this repository** to keep track o
 
 This repository is a curated public technical surface. The complete private engineering history, operational evidence, and internal automation material are not published wholesale.
 
-Selected source code and tests may be added after security, privacy, and licensing review.
+Selected source code and tests may be added after security, privacy, and licensing review. The separation exists to protect unfinished execution paths and sensitive engineering material, not to replace factual evidence.
 
 ---
 
