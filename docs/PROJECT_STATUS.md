@@ -1,6 +1,6 @@
 # CopyPump — Public Project Status
 
-Last updated: 2026-09-05
+Last updated: 2026-09-08
 
 CopyPump is under active development. This page is intentionally conservative: it separates what is publicly documented from what is still being verified privately.
 
@@ -36,6 +36,16 @@ PnL / FEES / AUDIT EVIDENCE
 ```
 
 A lifecycle is not considered publicly proven merely because a UI, build, simulation, paper executor, or AI assessment succeeds. Public proof requires the relevant Devnet transaction and reconciliation evidence to be captured and reviewed.
+
+## Current development update — September 8, 2026
+
+Product hardening continues under the current recovery milestone.
+
+Recent engineering work includes expanded validation and automated test coverage for the Price Alerts subsystem. Browser QA and independent review are still required before this work is treated as a completed public milestone.
+
+The primary proof target remains unchanged: a complete reviewed Solana Devnet trading lifecycle with transaction confirmation, reconciliation, fee/PnL accounting, and audit evidence.
+
+Mainnet remains intentionally blocked while this verification work continues.
 
 ## Publicly available today
 
