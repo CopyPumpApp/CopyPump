@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "network": "solana-devnet",
+  "status": "draft",
+  "lifecycle": [
+    {
+      "step": "BUY",
+      "evidenceType": "onchain",
+      "verified": false,
+      "simulation": false,
+      "evidence": {},
+      "notes": "Attach a real Devnet transaction signature only after independent review."
+    },
+    {
+      "step": "POSITION",
+      "evidenceType": "application",
+      "verified": false,
+      "simulation": false,
+      "evidence": {},
+      "notes": "Record the public-safe source used to reconcile the resulting position."
+    },
+    {
+      "step": "PARTIAL_SELL",
+      "evidenceType": "onchain",
+      "verified": false,
+      "simulation": false,
+      "evidence": {},
+      "notes": "Attach reviewed Devnet evidence for a partial exit."
+    },
+    {
+      "step": "FULL_SELL",
+      "evidenceType": "onchain",
+      "verified": false,
+      "simulation": false,
+      "evidence": {},
+      "notes": "Attach reviewed Devnet evidence for the final exit."
+    }
+  ]
+}
