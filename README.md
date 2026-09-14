@@ -23,7 +23,7 @@ You can help without touching the full private engineering stack. The public rep
 - UX/accessibility feedback;
 - early-user product feedback.
 
-**Start here:** [Contributing](CONTRIBUTING.md) · [Open issues](https://github.com/CopyPumpApp/CopyPump/issues) · [Project status](docs/PROJECT_STATUS.md)
+**Start here:** [Contributing](CONTRIBUTING.md) · [Open issues](https://github.com/CopyPumpApp/CopyPump/issues) · [Discord](https://discord.gg/DNBQtqw6R) · [Project status](docs/PROJECT_STATUS.md)
 
 ### Run something in 60 seconds
 
@@ -49,7 +49,7 @@ Pick a task that matches your background. These are scoped so contributors can h
 - **Node.js / performance:** [#10 Design a reproducible benchmark for Price Alerts save latency](https://github.com/CopyPumpApp/CopyPump/issues/10) — `help wanted`
 - **UX / early user / product:** [#11 Review the public project surface for clarity and onboarding](https://github.com/CopyPumpApp/CopyPump/issues/11) — `good first issue`
 
-If you want to help but are unsure where to start, open an issue titled `Contributor intro: <your area>` and tell us what you build, test, research, or use.
+If you want to help but are unsure where to start, open an issue titled `Contributor intro: <your area>` and tell us what you build, test, research, or use. You can also join the [CopyPump Discord](https://discord.gg/DNBQtqw6R) and start in `#questions`, `#devnet-testing`, `#bug-reports`, or `#feature-ideas`.
 
 ## At a glance
 
@@ -65,7 +65,7 @@ If you want to help but are unsure where to start, open an issue titled `Contrib
 
 ### Quick links
 
-[Project status](docs/PROJECT_STATUS.md) · [Architecture](docs/ARCHITECTURE.md) · [Security model](docs/SECURITY_MODEL.md) · [Devnet status](docs/DEVNET_STATUS.md) · [Roadmap](docs/ROADMAP.md) · [Contributing](CONTRIBUTING.md) · [Maintainers](MAINTAINERS.md) · [X](https://x.com/CopyPumpAI)
+[Project status](docs/PROJECT_STATUS.md) · [Architecture](docs/ARCHITECTURE.md) · [Security model](docs/SECURITY_MODEL.md) · [Devnet status](docs/DEVNET_STATUS.md) · [Roadmap](docs/ROADMAP.md) · [Contributing](CONTRIBUTING.md) · [Maintainers](MAINTAINERS.md) · [Discord](https://discord.gg/DNBQtqw6R) · [X](https://x.com/CopyPumpAI)
 
 ## Why CopyPump
 
@@ -148,10 +148,13 @@ If you're following the build, **star or watch this repository**. If you can con
 
 ## Public channels
 
+- **Discord:** https://discord.gg/DNBQtqw6R
 - **X:** https://x.com/CopyPumpAI
 - **YouTube:** https://youtube.com/@copypumpapp
 - **Pump.fun:** https://pump.fun/profile/CopyPumpApp
 - **Contact:** copypumphq@gmail.com
+
+Never share seed phrases, private keys, passwords, 2FA codes, wallet backup phrases, or signed secret payloads with anyone claiming to be support.
 
 ## License and source boundary
 
