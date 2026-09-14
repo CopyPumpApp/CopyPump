@@ -28,7 +28,15 @@ A good first contribution can be as simple as:
 4. Keep the change small and focused.
 5. Open a pull request with a short explanation of what changed and how you verified it.
 
+For a code-first starting point, see [#16: optional Solana Devnet RPC verification for the public evidence validator](https://github.com/CopyPumpApp/CopyPump/issues/16).
+
 If you are not ready to write code, useful feedback is still valuable. Reproducible UX, performance, documentation, Devnet, and product observations are welcome.
+
+## Contributor model
+
+Participation in the public CopyPump repository is voluntary and unpaid. Ordinary open-source contributions do not come with a promise of a bounty, tokens, equity, revenue share, employment, or future compensation.
+
+Contributing to the public repository also does not grant access to the private engineering repository, private infrastructure, credentials, wallets, or proprietary core implementation.
 
 ## Contribution rules
 
@@ -88,7 +96,8 @@ CopyPump is still a technical alpha focused on Solana Devnet hardening. Mainnet 
 ## Contact
 
 - GitHub issues: preferred for public product/engineering discussion
+- Discord: https://discord.gg/DNBQtqw6R
 - X: https://x.com/CopyPumpAI
 - Email: **copypumphq@gmail.com**
 
-If you want to contribute but do not know where to start, open an issue titled **`Contributor intro: <your area>`** and briefly describe your skills or what you want to test.
+If you want to contribute but do not know where to start, open an issue titled **`Contributor intro: <your area>`** and briefly describe your skills or what you want to test. You can also join Discord and start in `#questions` or `#devnet-testing`.
