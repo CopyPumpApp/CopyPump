@@ -1,6 +1,6 @@
 # CopyPump — Public Project Status
 
-Last updated: 2026-09-08
+Last updated: 2026-09-14
 
 CopyPump is under active development. This page is intentionally conservative: it separates what is publicly documented from what is still being verified privately.
 
@@ -37,15 +37,15 @@ PnL / FEES / AUDIT EVIDENCE
 
 A lifecycle is not considered publicly proven merely because a UI, build, simulation, paper executor, or AI assessment succeeds. Public proof requires the relevant Devnet transaction and reconciliation evidence to be captured and reviewed.
 
-## Current development update — September 8, 2026
+## Current development review — September 14, 2026
 
-Product hardening continues under the current recovery milestone.
+Product hardening remains in progress. The latest public review found no newer engineering checkpoint that meets CopyPump's publication threshold for a standalone product milestone.
 
-Recent engineering work includes expanded validation and automated test coverage for the Price Alerts subsystem. Browser QA and independent review are still required before this work is treated as a completed public milestone.
+The September 8 Price Alerts work therefore remains an in-progress engineering update rather than a completed public milestone. The primary proof target is unchanged: a complete reviewed Solana Devnet trading lifecycle with transaction confirmation, reconciliation, fee/PnL accounting, and audit evidence.
 
-The primary proof target remains unchanged: a complete reviewed Solana Devnet trading lifecycle with transaction confirmation, reconciliation, fee/PnL accounting, and audit evidence.
+Public milestone updates are now gated by a stricter evidence policy: a material update must be verified, safe to disclose, supported by repository evidence, and must not imply Mainnet readiness, profitability, completed external audit, funding, or production readiness without separate verified evidence.
 
-Mainnet remains intentionally blocked while this verification work continues.
+Mainnet remains intentionally blocked while hardening and verification continue.
 
 ## Publicly available today
 
