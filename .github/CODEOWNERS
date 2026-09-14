@@ -1,0 +1,12 @@
+# CopyPump public repository ownership and review routing.
+# External contributors can propose changes, but final review remains with the project owner.
+
+* @Garbuz7
+/.github/ @Garbuz7
+/SECURITY.md @Garbuz7
+/LICENSE @Garbuz7
+/package.json @Garbuz7
+/tools/ @Garbuz7
+/examples/ @Garbuz7
+/docs/SECURITY_MODEL.md @Garbuz7
+/docs/PROJECT_STATUS.md @Garbuz7
