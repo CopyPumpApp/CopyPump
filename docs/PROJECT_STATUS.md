@@ -39,11 +39,17 @@ A lifecycle is not considered publicly proven merely because a UI, build, simula
 
 ## Current development review — September 14, 2026
 
-Product hardening remains in progress. The latest public review found no newer engineering checkpoint that meets CopyPump's publication threshold for a standalone product milestone.
+Product hardening remains in progress. The latest working-state review found useful engineering progress in the Price Alerts slice, but the slice is still **IN PROGRESS / NOT PASS** and is not a standalone product milestone.
 
-The September 8 Price Alerts work therefore remains an in-progress engineering update rather than a completed public milestone. The primary proof target is unchanged: a complete reviewed Solana Devnet trading lifecycle with transaction confirmation, reconciliation, fee/PnL accounting, and audit evidence.
+The main diagnostic advance is that the remaining Save latency has been narrowed to application-state queue contention rather than a simple stale-process problem. A clean runtime restart did not remove the delay: initial fresh-runtime Save cycles still measured roughly **11.6–12.4 seconds**. Queue profiling showed that Price Alerts updates can wait several seconds before their updater starts, with observed waits around **5.2 seconds** and **6.6 seconds** while background state writes are ahead in the same queue.
 
-Public milestone updates are now gated by a stricter evidence policy: a material update must be verified, safe to disclose, supported by repository evidence, and must not imply Mainnet readiness, profitability, completed external audit, funding, or production readiness without separate verified evidence.
+The writes observed ahead of the user-facing update include background agent-state persistence and periodic market/whale state updates. Durable persistence itself is variable and still contributes some latency, but the queue wait before the Price Alerts updater begins is currently the larger user-visible bottleneck.
+
+This is a diagnostic milestone, not a feature-completion claim. The next acceptance step is to reduce or isolate unnecessary StateStore queue pressure, rerun the Price Alerts Save path, and then satisfy the normal CopyPump acceptance contract before marking the slice PASS.
+
+The primary proof target remains unchanged: a complete reviewed Solana Devnet trading lifecycle with transaction confirmation, reconciliation, fee/PnL accounting, and audit evidence.
+
+Public milestone updates remain gated by a strict evidence policy: a material update must be verified, safe to disclose, supported by repository evidence, and must not imply Mainnet readiness, profitability, completed external audit, funding, or production readiness without separate verified evidence.
 
 Mainnet remains intentionally blocked while hardening and verification continue.
 
@@ -68,10 +74,11 @@ CopyPump does **not** currently claim:
 
 ## Next public milestones
 
-1. Publish reviewed evidence for a complete real Devnet execution lifecycle when that evidence is ready.
-2. Publish selected source code and tests that pass security, privacy, and licensing review.
-3. Tie future roadmap updates to reproducible engineering evidence rather than marketing claims.
-4. Publish release notes for meaningful public milestones instead of creating cosmetic releases.
+1. Bring the current Price Alerts slice to PASS under the normal verification contract.
+2. Publish reviewed evidence for a complete real Devnet execution lifecycle when that evidence is ready.
+3. Publish selected source code and tests that pass security, privacy, and licensing review.
+4. Tie future roadmap updates to reproducible engineering evidence rather than marketing claims.
+5. Publish release notes for meaningful public milestones instead of creating cosmetic releases.
 
 ## Why the full engineering repository is not public
 
