@@ -1,0 +1,55 @@
+name: Solana Devnet review
+description: Submit an external review or reproducible finding about CopyPump's public Devnet evidence model
+title: "[Devnet review]: "
+labels:
+  - help wanted
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for public, independently checkable Solana Devnet findings. This is a technical-alpha project; Mainnet readiness is not implied.
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Review scope
+      options:
+        - Transaction/signature evidence
+        - Confirmation/finality
+        - Token-account or balance reconciliation
+        - BUY / POSITION / PARTIAL SELL / FULL SELL lifecycle evidence
+        - Fee / PnL accounting evidence
+        - Failure / rollback / idempotency evidence
+        - RPC / indexing / explorer verification
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: finding
+    attributes:
+      label: Finding or recommendation
+      description: State the issue, gap, or improvement as precisely as possible.
+    validations:
+      required: true
+  - type: textarea
+    id: verify
+    attributes:
+      label: How another reviewer can verify it
+      description: Include public-safe steps, Devnet signatures, explorer links, or a reproducible method where available.
+    validations:
+      required: true
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Proposed change
+      description: What should be changed in public docs, tests, evidence format, or review procedure?
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Boundaries
+      options:
+        - label: This submission uses Devnet/public-safe evidence only and does not require real funds.
+          required: true
+        - label: I did not include private keys, seed phrases, credentials, auth tokens, private wallet/account data, or sensitive internal security details.
+          required: true
+        - label: I understand that a UI state, simulation, paper executor, or AI assessment is not equivalent to reviewed on-chain execution evidence.
+          required: true
