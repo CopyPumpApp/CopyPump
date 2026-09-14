@@ -23,6 +23,19 @@ You can help without touching the full private engineering stack. The public rep
 
 **Start here:** [Contributing](CONTRIBUTING.md) · [Open issues](https://github.com/CopyPumpApp/CopyPump/issues) · [Project status](docs/PROJECT_STATUS.md)
 
+### Run something in 60 seconds
+
+The repository now includes a small zero-dependency public tool rather than documentation only. It validates the structure and safety boundary of a proposed Solana Devnet lifecycle evidence manifest.
+
+```bash
+git clone https://github.com/CopyPumpApp/CopyPump.git
+cd CopyPump
+npm test
+node tools/validate-devnet-evidence.mjs examples/devnet-evidence.example.json
+```
+
+See [public contributor tools](tools/README.md). The validator does **not** prove that a transaction exists on-chain or claim that CopyPump's lifecycle is complete; it gives contributors a runnable base for building independent Devnet verification tooling.
+
 ### Open contributor tasks
 
 Pick a task that matches your background. These are scoped so contributors can help without access to the private engineering repository:
@@ -125,6 +138,7 @@ If you're following the build, **star or watch this repository**. If you can con
 - [Security model](docs/SECURITY_MODEL.md)
 - [Devnet status](docs/DEVNET_STATUS.md)
 - [Roadmap](docs/ROADMAP.md)
+- [Public contributor tools](tools/README.md)
 - [Security policy](SECURITY.md)
 - [Contributing](CONTRIBUTING.md)
 
