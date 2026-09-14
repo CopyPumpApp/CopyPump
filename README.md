@@ -150,11 +150,13 @@ If you're following the build, **star or watch this repository**. If you can con
 - **Pump.fun:** https://pump.fun/profile/CopyPumpApp
 - **Contact:** copypumphq@gmail.com
 
-## Source availability
+## License and source boundary
 
-This repository is a curated public technical surface. The complete private engineering history, operational evidence, and internal automation material are not published wholesale.
+The contents of this **public repository** are licensed under the [Apache License 2.0](LICENSE), unless a file explicitly states otherwise. Contributions intentionally submitted to this repository are accepted under the same license terms.
 
-Selected source code and tests may be added after security, privacy, and licensing review. The separation exists to protect unfinished execution paths and sensitive engineering material, not to replace factual evidence.
+This license applies only to material actually published in `CopyPumpApp/CopyPump`. It does **not** make CopyPump's private engineering repository, proprietary core trading implementation, private operational evidence, credentials, or unreleased internal systems public or open source.
+
+The complete private engineering history and proprietary core remain separate and closed. Public code is selected deliberately so contributors can build, test, and review useful components without exposing sensitive or unreleased implementation.
 
 ---
 
