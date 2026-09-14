@@ -1,0 +1,56 @@
+name: Contributor intro
+description: Tell us how you would like to help if you are not sure which issue to take
+title: "Contributor intro: "
+labels:
+  - help wanted
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Welcome. CopyPump is looking for focused, public-safe contributions from Solana engineers, TypeScript/Node.js and React developers, QA/performance engineers, security-minded reviewers, technical writers, and early users.
+  - type: checkboxes
+    id: skills
+    attributes:
+      label: Areas where you can help
+      options:
+        - label: Solana / SPL / RPC
+        - label: TypeScript / Node.js backend
+        - label: React / frontend / UX
+        - label: QA / testing
+        - label: Performance / concurrency
+        - label: Security review
+        - label: Documentation / technical writing
+        - label: Early-user feedback
+  - type: textarea
+    id: experience
+    attributes:
+      label: Relevant experience
+      description: A short summary is enough. Public GitHub/profile/project links are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: interest
+    attributes:
+      label: What would you like to work on?
+      description: Mention an existing issue number if one fits, or describe a small contribution you can make.
+    validations:
+      required: true
+  - type: dropdown
+    id: size
+    attributes:
+      label: Preferred first contribution size
+      options:
+        - Small (docs, QA, focused fix)
+        - Medium (bounded implementation or test work)
+        - Review-only (technical feedback / evidence review)
+    validations:
+      required: true
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Project boundaries
+      options:
+        - label: I understand the public repository is a curated collaboration surface and does not contain the full private engineering stack.
+          required: true
+        - label: I will not post secrets, credentials, seed phrases, private keys, auth tokens, or private user/account data.
+          required: true
