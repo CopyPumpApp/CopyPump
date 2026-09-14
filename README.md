@@ -23,6 +23,16 @@ You can help without touching the full private engineering stack. The public rep
 
 **Start here:** [Contributing](CONTRIBUTING.md) · [Open issues](https://github.com/CopyPumpApp/CopyPump/issues) · [Project status](docs/PROJECT_STATUS.md)
 
+### Open contributor tasks
+
+Pick a task that matches your background. These are scoped so contributors can help without access to the private engineering repository:
+
+- **New contributor / docs / QA:** [#7 Audit public docs for broken links and onboarding friction](https://github.com/CopyPumpApp/CopyPump/issues/7) — `good first issue`
+- **QA / junior Solana:** [#8 Create a public QA checklist for CopyPump Devnet evidence](https://github.com/CopyPumpApp/CopyPump/issues/8) — `good first issue`
+- **Solana / RPC / SPL:** [#9 Review the Solana Devnet lifecycle evidence model](https://github.com/CopyPumpApp/CopyPump/issues/9) — `help wanted`
+- **Node.js / performance:** [#10 Design a reproducible benchmark for Price Alerts save latency](https://github.com/CopyPumpApp/CopyPump/issues/10) — `help wanted`
+- **UX / early user / product:** [#11 Review the public project surface for clarity and onboarding](https://github.com/CopyPumpApp/CopyPump/issues/11) — `good first issue`
+
 If you want to help but are unsure where to start, open an issue titled `Contributor intro: <your area>` and tell us what you build, test, research, or use.
 
 ## At a glance
