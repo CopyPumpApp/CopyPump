@@ -1,0 +1,12 @@
+{
+  "name": "copypump-public-tools",
+  "version": "0.1.0",
+  "description": "Public-safe validation tools for CopyPump contributor workflows.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
