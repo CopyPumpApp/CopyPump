@@ -1,0 +1,63 @@
+name: Bug report
+description: Report a reproducible problem in the public CopyPump surface
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve CopyPump. Please report only public-safe information. Never include seed phrases, private keys, API keys, auth tokens, private wallet/account data, or production secrets.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Public website / UI
+        - Documentation / onboarding
+        - Solana Devnet evidence / verification
+        - Performance / latency
+        - Other public surface
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: Give the smallest reliable sequence that reproduces the issue.
+      placeholder: "1. ...\n2. ...\n3. ..."
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, OS, network (Devnet where relevant), and any other non-sensitive context.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Public-safe evidence
+      description: Screenshots, logs, transaction signatures, or links with all secrets and personal data removed.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed secrets, credentials, seed phrases, private keys, auth tokens, and private user/account data.
+          required: true
+        - label: I am not presenting simulation/paper results as proof of real on-chain execution.
+          required: true
