@@ -1,5 +1,7 @@
 # CopyPump
 
+[![Public CI](https://github.com/CopyPumpApp/CopyPump/actions/workflows/ci.yml/badge.svg)](https://github.com/CopyPumpApp/CopyPump/actions/workflows/ci.yml)
+
 **Follow smart money. Keep control.**
 
 CopyPump is building **non-custodial autonomous trading infrastructure on Solana** where users retain custody while automation operates inside explicit capital, risk, wallet, and policy limits.
@@ -63,7 +65,7 @@ If you want to help but are unsure where to start, open an issue titled `Contrib
 
 ### Quick links
 
-[Project status](docs/PROJECT_STATUS.md) · [Architecture](docs/ARCHITECTURE.md) · [Security model](docs/SECURITY_MODEL.md) · [Devnet status](docs/DEVNET_STATUS.md) · [Roadmap](docs/ROADMAP.md) · [Contributing](CONTRIBUTING.md) · [X](https://x.com/CopyPumpAI)
+[Project status](docs/PROJECT_STATUS.md) · [Architecture](docs/ARCHITECTURE.md) · [Security model](docs/SECURITY_MODEL.md) · [Devnet status](docs/DEVNET_STATUS.md) · [Roadmap](docs/ROADMAP.md) · [Contributing](CONTRIBUTING.md) · [Maintainers](MAINTAINERS.md) · [X](https://x.com/CopyPumpAI)
 
 ## Why CopyPump
 
@@ -142,6 +144,7 @@ If you're following the build, **star or watch this repository**. If you can con
 - [Public contributor tools](tools/README.md)
 - [Security policy](SECURITY.md)
 - [Contributing](CONTRIBUTING.md)
+- [Maintainers and ownership](MAINTAINERS.md)
 
 ## Public channels
 
