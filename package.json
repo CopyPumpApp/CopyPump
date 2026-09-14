@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Public-safe validation tools for CopyPump contributor workflows.",
   "type": "module",
+  "license": "Apache-2.0",
   "scripts": {
     "test": "node --test"
   },
