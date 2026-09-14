@@ -43,6 +43,14 @@ For code or documentation contributions:
 - do not claim Mainnet readiness, profitability, or production readiness without evidence;
 - keep secrets and private operational material out of commits.
 
+## Licensing of contributions
+
+The public `CopyPumpApp/CopyPump` repository is licensed under the [Apache License 2.0](LICENSE), unless a file explicitly states otherwise.
+
+By intentionally submitting a contribution for inclusion in this public repository, you agree that the contribution may be distributed under Apache-2.0, consistent with Section 5 of that license.
+
+This applies only to material intentionally contributed to the public repository. It does not grant access to, or change the licensing/status of, CopyPump's private engineering repository or proprietary core implementation.
+
 ## Bug reports
 
 A useful bug report should include:
