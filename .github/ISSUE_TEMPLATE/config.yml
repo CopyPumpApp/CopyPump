@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/CopyPumpApp/CopyPump/blob/main/SECURITY.md
+    about: Do not report exploitable security issues in public. Follow the private reporting instructions.
+  - name: Contribution guide
+    url: https://github.com/CopyPumpApp/CopyPump/blob/main/CONTRIBUTING.md
+    about: Read the contribution boundaries and current public collaboration workflow before opening a large proposal.
