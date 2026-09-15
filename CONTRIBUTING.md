@@ -28,7 +28,7 @@ A good first contribution can be as simple as:
 4. Keep the change small and focused.
 5. Open a pull request with a short explanation of what changed and how you verified it.
 
-For a code-first starting point, see [#16: optional Solana Devnet RPC verification for the public evidence validator](https://github.com/CopyPumpApp/CopyPump/issues/16).
+For a code-first starting point, see [#31: add a fail-closed Solana v1 transaction-read helper](https://github.com/CopyPumpApp/CopyPump/issues/31). The public validator already has a bounded Devnet cluster-identity check, so #31 builds directly on runnable code instead of starting from documentation only.
 
 If you are not ready to write code, useful feedback is still valuable. Reproducible UX, performance, documentation, Devnet, and product observations are welcome.
 
