@@ -43,7 +43,7 @@ See [public contributor tools](tools/README.md). The validator does **not** prov
 We are intentionally keeping the active queue small so contributors can see the highest-value work immediately instead of being spread across low-signal tasks.
 
 - **Primary code-first task — Solana / Node.js:** [#16 Add a bounded Solana Devnet RPC identity check](https://github.com/CopyPumpApp/CopyPump/issues/16) — `good first issue` · `help wanted`
-- **Expert review — Solana / RPC / SPL:** [#9 Review the Solana Devnet lifecycle evidence model](https://github.com/CopyPumpApp/CopyPump/issues/9) — `help wanted`
+- **Timely expert review — Solana / RPC / indexing:** [#9 Review Solana v1 read readiness for the public evidence model](https://github.com/CopyPumpApp/CopyPump/issues/9) — `help wanted`. Solana's current public docs say v1 is not yet active on any cluster, so this is a pre-activation readiness review rather than a product-readiness claim.
 
 Broader docs-only, UX-only, checklist-only, and private-runtime benchmark tasks are paused until there is a concrete public slice that makes them directly testable.
 
