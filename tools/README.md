@@ -15,24 +15,45 @@ It currently validates:
 - verified on-chain steps include a syntactically plausible Solana transaction signature;
 - public manifests do not include obvious secret-bearing fields such as private keys, seed phrases, API keys, auth tokens, or cookies.
 
-It **does not** query Solana RPC, prove that a transaction exists, verify balances, calculate PnL, or certify CopyPump as production-ready. A schema-valid manifest is only a better input for independent review.
+By default the validator remains fully offline. An optional RPC identity check can be enabled with `--rpc-url`; it calls only Solana JSON-RPC `getGenesisHash`, verifies that the endpoint is Devnet, and uses a bounded timeout. The check does not sign, submit, or look up transactions.
+
+A schema-valid manifest or successful cluster identity check does **not** prove that a transaction exists, verify balances, calculate PnL, or certify CopyPump as production-ready. These tools are only a public base for independent verification work.
 
 ## Run it
 
 Requires Node.js 20+ and no third-party packages.
+
+Offline/default mode:
 
 ```bash
 npm test
 node tools/validate-devnet-evidence.mjs examples/devnet-evidence.example.json
 ```
 
-The example is intentionally `draft` and contains no real transaction evidence.
+Optional Devnet RPC identity check:
+
+```bash
+node tools/validate-devnet-evidence.mjs examples/devnet-evidence.example.json \
+  --rpc-url https://api.devnet.solana.com
+```
+
+The RPC timeout defaults to 5000 ms and can be bounded explicitly between 100 and 30000 ms:
+
+```bash
+node tools/validate-devnet-evidence.mjs examples/devnet-evidence.example.json \
+  --rpc-url https://api.devnet.solana.com \
+  --rpc-timeout-ms 3000
+```
+
+Do not commit provider URLs that contain credentials or API tokens. Errors are intentionally sanitized and do not echo the RPC URL or provider response text.
+
+The example manifest is intentionally `draft` and contains no real transaction evidence.
 
 ## Good contribution directions
 
 Useful follow-up contributions include:
 
-- optional Solana Devnet RPC verification for supplied transaction signatures;
+- fail-closed Solana transaction reads with explicit v1 support and deterministic mocked fixtures;
 - explorer-link consistency checks;
 - balance/token-account reconciliation helpers;
 - fixture coverage for failed and partially confirmed transactions;
