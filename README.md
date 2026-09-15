@@ -42,7 +42,7 @@ See [public contributor tools](tools/README.md). The validator does **not** prov
 
 Pick a task that matches your background. These are scoped so contributors can help without access to the private engineering repository:
 
-- **Solana / Node.js code:** [#16 Add optional Solana Devnet RPC verification to the public evidence validator](https://github.com/CopyPumpApp/CopyPump/issues/16) — `good first issue` · `help wanted`
+- **Solana / Node.js code:** [#16 Add a bounded Solana Devnet RPC identity check](https://github.com/CopyPumpApp/CopyPump/issues/16) — `good first issue` · `help wanted`
 - **New contributor / docs / QA:** [#7 Audit public docs for broken links and onboarding friction](https://github.com/CopyPumpApp/CopyPump/issues/7) — `good first issue`
 - **QA / junior Solana:** [#8 Create a public QA checklist for CopyPump Devnet evidence](https://github.com/CopyPumpApp/CopyPump/issues/8) — `good first issue`
 - **Solana / RPC / SPL:** [#9 Review the Solana Devnet lifecycle evidence model](https://github.com/CopyPumpApp/CopyPump/issues/9) — `help wanted`
