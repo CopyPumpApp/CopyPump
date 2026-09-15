@@ -27,7 +27,7 @@ You can help without touching the full private engineering stack. The public rep
 
 ### Run something in 60 seconds
 
-The repository now includes a small zero-dependency public tool rather than documentation only. It validates the structure and safety boundary of a proposed Solana Devnet lifecycle evidence manifest.
+The repository includes a small zero-dependency public tool rather than documentation only. It validates the structure and safety boundary of a proposed Solana Devnet lifecycle evidence manifest. By default it stays fully offline; contributors can also opt into a bounded `getGenesisHash` check that confirms an RPC endpoint is Solana Devnet without signing, submitting, or looking up transactions.
 
 ```bash
 git clone https://github.com/CopyPumpApp/CopyPump.git
@@ -36,13 +36,20 @@ npm test
 node tools/validate-devnet-evidence.mjs examples/devnet-evidence.example.json
 ```
 
+Optional Devnet RPC identity check:
+
+```bash
+node tools/validate-devnet-evidence.mjs examples/devnet-evidence.example.json \
+  --rpc-url https://api.devnet.solana.com
+```
+
 See [public contributor tools](tools/README.md). The validator does **not** prove that a transaction exists on-chain or claim that CopyPump's lifecycle is complete; it gives contributors a runnable base for building independent Devnet verification tooling.
 
 ### Active contributor queue
 
 We are intentionally keeping the active queue small so contributors can see the highest-value work immediately instead of being spread across low-signal tasks.
 
-- **Primary code-first task — Solana / Node.js:** [#16 Add a bounded Solana Devnet RPC identity check](https://github.com/CopyPumpApp/CopyPump/issues/16) — `good first issue` · `help wanted`
+- **Primary code-first task — Solana / Node.js:** [#31 Add a fail-closed Solana v1 transaction-read helper](https://github.com/CopyPumpApp/CopyPump/issues/31) — `good first issue` · `help wanted`. This builds directly on the bounded Devnet RPC identity boundary with mocked legacy/v0/v1, `-32015`, failed-transaction, not-found, and timeout cases.
 - **Timely expert review — Solana / RPC / indexing:** [#9 Review Solana v1 read compatibility for the public evidence model](https://github.com/CopyPumpApp/CopyPump/issues/9) — `help wanted`. Solana's official Larger Transaction Sizes upgrade page now reports v1 live on Devnet and Testnet and the Mainnet feature gate active in epoch 1035, so this is an active read/indexing compatibility review rather than a pre-activation exercise. This network status is not a CopyPump product-readiness claim.
 
 Broader docs-only, UX-only, checklist-only, and private-runtime benchmark tasks are paused until there is a concrete public slice that makes them directly testable.
