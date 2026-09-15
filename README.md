@@ -38,16 +38,14 @@ node tools/validate-devnet-evidence.mjs examples/devnet-evidence.example.json
 
 See [public contributor tools](tools/README.md). The validator does **not** prove that a transaction exists on-chain or claim that CopyPump's lifecycle is complete; it gives contributors a runnable base for building independent Devnet verification tooling.
 
-### Open contributor tasks
+### Active contributor queue
 
-Pick a task that matches your background. These are scoped so contributors can help without access to the private engineering repository:
+We are intentionally keeping the active queue small so contributors can see the highest-value work immediately instead of being spread across low-signal tasks.
 
-- **Solana / Node.js code:** [#16 Add a bounded Solana Devnet RPC identity check](https://github.com/CopyPumpApp/CopyPump/issues/16) — `good first issue` · `help wanted`
-- **New contributor / docs / QA:** [#7 Audit public docs for broken links and onboarding friction](https://github.com/CopyPumpApp/CopyPump/issues/7) — `good first issue`
-- **QA / junior Solana:** [#8 Create a public QA checklist for CopyPump Devnet evidence](https://github.com/CopyPumpApp/CopyPump/issues/8) — `good first issue`
-- **Solana / RPC / SPL:** [#9 Review the Solana Devnet lifecycle evidence model](https://github.com/CopyPumpApp/CopyPump/issues/9) — `help wanted`
-- **Node.js / performance:** [#10 Design a reproducible benchmark for Price Alerts save latency](https://github.com/CopyPumpApp/CopyPump/issues/10) — `help wanted`
-- **UX / early user / product:** [#11 Review the public project surface for clarity and onboarding](https://github.com/CopyPumpApp/CopyPump/issues/11) — `good first issue`
+- **Primary code-first task — Solana / Node.js:** [#16 Add a bounded Solana Devnet RPC identity check](https://github.com/CopyPumpApp/CopyPump/issues/16) — `good first issue` · `help wanted`
+- **Expert review — Solana / RPC / SPL:** [#9 Review the Solana Devnet lifecycle evidence model](https://github.com/CopyPumpApp/CopyPump/issues/9) — `help wanted`
+
+Broader docs-only, UX-only, checklist-only, and private-runtime benchmark tasks are paused until there is a concrete public slice that makes them directly testable.
 
 If you want to help but are unsure where to start, open an issue titled `Contributor intro: <your area>` and tell us what you build, test, research, or use. You can also join the [CopyPump Discord](https://discord.gg/DNBQtqw6R) and start in `#questions`, `#devnet-testing`, `#bug-reports`, or `#feature-ideas`.
 
