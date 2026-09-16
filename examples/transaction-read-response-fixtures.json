@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Synthetic, zero-network fixtures for CopyPump issue #31. These are test vectors only and are not on-chain evidence.",
+  "cases": [
+    {
+      "name": "legacy-transaction-succeeded",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+          "slot": 1,
+          "version": "legacy",
+          "meta": { "err": null },
+          "transaction": {
+            "signatures": ["synthetic-signature"],
+            "message": {}
+          }
+        }
+      },
+      "expectedKind": "transaction_succeeded"
+    },
+    {
+      "name": "v0-transaction-succeeded",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "result": {
+          "slot": 2,
+          "version": 0,
+          "meta": { "err": null },
+          "transaction": {
+            "signatures": ["synthetic-signature"],
+            "message": {}
+          }
+        }
+      },
+      "expectedKind": "transaction_succeeded"
+    },
+    {
+      "name": "v1-transaction-succeeded",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "result": {
+          "slot": 3,
+          "version": 1,
+          "meta": { "err": null },
+          "transaction": {
+            "signatures": ["synthetic-signature"],
+            "message": {}
+          }
+        }
+      },
+      "expectedKind": "transaction_succeeded"
+    },
+    {
+      "name": "transaction-not-found",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "result": null
+      },
+      "expectedKind": "not_found"
+    },
+    {
+      "name": "unsupported-transaction-version",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "error": {
+          "code": -32015,
+          "message": "synthetic unsupported transaction version"
+        }
+      },
+      "expectedKind": "unsupported_transaction_version"
+    },
+    {
+      "name": "transaction-failed-on-chain",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "result": {
+          "slot": 6,
+          "version": 1,
+          "meta": {
+            "err": {
+              "InstructionError": [0, "synthetic-failure"]
+            }
+          },
+          "transaction": {
+            "signatures": ["synthetic-signature"],
+            "message": {}
+          }
+        }
+      },
+      "expectedKind": "transaction_failed"
+    },
+    {
+      "name": "malformed-response",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "unexpected": true
+      },
+      "expectedKind": "invalid_response"
+    }
+  ]
+}
