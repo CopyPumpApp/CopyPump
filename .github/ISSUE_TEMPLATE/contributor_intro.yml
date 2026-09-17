@@ -9,7 +9,7 @@ body:
       value: |
         Welcome. CopyPump is looking for focused, public-safe contributions from Solana engineers, TypeScript/Node.js and React developers, QA/performance engineers, security-minded reviewers, technical writers, and early users.
 
-        If you want a code-first starting point, see #31: Add a fail-closed Solana v1 transaction-read helper.
+        If you want a code-first starting point, see #39: Add a bounded read-only Devnet getTransaction lookup. The pure transaction-read classifier is already merged and tested, so the task focuses on a bounded RPC read path rather than inventing response semantics from scratch.
 
         Public contributions are voluntary and unpaid. CopyPump does not promise a bounty, token allocation, equity, revenue share, employment, or future compensation for submitting this contributor intro or for ordinary public open-source contributions.
   - type: checkboxes

@@ -27,7 +27,9 @@ You can help without touching the full private engineering stack. The public rep
 
 ### Run something in 60 seconds
 
-The repository includes a small zero-dependency public tool rather than documentation only. It validates the structure and safety boundary of a proposed Solana Devnet lifecycle evidence manifest. By default it stays fully offline; contributors can also opt into a bounded `getGenesisHash` check that confirms an RPC endpoint is Solana Devnet without signing, submitting, or looking up transactions.
+The repository includes small zero-dependency public tools rather than documentation only. The Devnet evidence validator checks the structure and safety boundary of a proposed Solana Devnet lifecycle evidence manifest. By default it stays fully offline; contributors can also opt into a bounded `getGenesisHash` check that confirms an RPC endpoint is Solana Devnet without signing or submitting transactions.
+
+The public code now also includes a pure, fail-closed `getTransaction` response classifier with deterministic legacy/v0/v1 fixtures. That classifier performs zero network I/O and distinguishes a returned transaction, `result: null`, RPC `-32015`, an on-chain failure (`meta.err`), other RPC errors, and malformed responses.
 
 ```bash
 git clone https://github.com/CopyPumpApp/CopyPump.git
@@ -49,7 +51,7 @@ See [public contributor tools](tools/README.md). The validator does **not** prov
 
 We are intentionally keeping the active queue small so contributors can see the highest-value work immediately instead of being spread across low-signal tasks.
 
-- **Primary code-first microtask — Solana / Node.js:** [#31 Add a fail-closed Solana v1 transaction-read helper](https://github.com/CopyPumpApp/CopyPump/issues/31) — `good first issue` · `help wanted`. The first external PR is now intentionally tiny: add a **pure, zero-network classifier** for decoded `getTransaction` JSON-RPC responses plus deterministic tests for transaction returned, `result: null`, RPC `-32015`, failed transaction (`meta.err`), and malformed response. Legacy/v0/v1-shaped transaction objects must remain version-tolerant; transport/RPC plumbing is deferred to a later task.
+- **Primary code-first task — Solana / Node.js:** [#39 Add a bounded read-only Devnet `getTransaction` lookup](https://github.com/CopyPumpApp/CopyPump/issues/39) — `good first issue` · `help wanted`. The pure classifier is already merged in [#38](https://github.com/CopyPumpApp/CopyPump/pull/38), so this task advances the public tool into an optional bounded transaction read: send `maxSupportedTransactionVersion: 1`, reuse the classifier, keep offline/default behavior intact, and cover the network boundary with deterministic mocked tests. No wallet connection, signing, submission, real funds, private repository access, provider secrets, or Mainnet capability is required.
 - **High-value expert review — Solana transaction safety:** [#9 Review safe Solana v1 send-path resource bounds](https://github.com/CopyPumpApp/CopyPump/issues/9) — `help wanted`. The task is not to enable v1 sending. It asks for a fail-closed public safety contract around explicit `transactionConfig` resource limits, absolute-lamport priority-fee caps, simulation invariants, deterministic v0/v1 negative fixtures, and submitted-unknown/idempotency/reconciliation behavior. This review is Devnet-hardening work and is not a CopyPump Mainnet- or v1-send-readiness claim.
 
 Broader docs-only, UX-only, checklist-only, and private-runtime benchmark tasks are paused until there is a concrete public slice that makes them directly testable.
