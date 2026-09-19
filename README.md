@@ -29,7 +29,7 @@ You can help without touching the full private engineering stack. The public rep
 
 The repository includes small zero-dependency public tools rather than documentation only. The Devnet evidence validator checks the structure and safety boundary of a proposed Solana Devnet lifecycle evidence manifest. By default it stays fully offline; contributors can also opt into a bounded `getGenesisHash` check that confirms an RPC endpoint is Solana Devnet without signing or submitting transactions.
 
-The public code now also includes a pure, fail-closed `getTransaction` response classifier with deterministic legacy/v0/v1 fixtures. That classifier performs zero network I/O and distinguishes a returned transaction, `result: null`, RPC `-32015`, an on-chain failure (`meta.err`), other RPC errors, and malformed responses.
+The public code also includes a pure, fail-closed `getTransaction` response classifier with deterministic legacy/v0/v1 fixtures plus a bounded, read-only Devnet transaction helper. The helper remains offline unless both an RPC URL and transaction signature are supplied, verifies the endpoint is Devnet first, then calls `getTransaction` with `maxSupportedTransactionVersion: 1`. It does not connect a wallet, sign or submit transactions, enable Mainnet, or expose private code.
 
 ```bash
 git clone https://github.com/CopyPumpApp/CopyPump.git
@@ -45,18 +45,17 @@ node tools/validate-devnet-evidence.mjs examples/devnet-evidence.example.json \
   --rpc-url https://api.devnet.solana.com
 ```
 
-See [public contributor tools](tools/README.md). The validator does **not** prove that a transaction exists on-chain or claim that CopyPump's lifecycle is complete; it gives contributors a runnable base for building independent Devnet verification tooling.
+See [public contributor tools](tools/README.md). These tools do **not** prove that CopyPump's trading lifecycle is complete or certify production readiness; they provide a public base for verification and review work.
 
 ### Active contributor queue
 
-We are intentionally keeping the active queue small so contributors can see the highest-value work immediately instead of being spread across low-signal tasks.
+We are intentionally keeping the active queue small instead of manufacturing issues purely to create activity.
 
-- **Primary code-first task — Solana / Node.js:** [#39 Add a bounded read-only Devnet `getTransaction` lookup](https://github.com/CopyPumpApp/CopyPump/issues/39) — `good first issue` · `help wanted`. The pure classifier is already merged in [#38](https://github.com/CopyPumpApp/CopyPump/pull/38), so this task advances the public tool into an optional bounded transaction read: send `maxSupportedTransactionVersion: 1`, reuse the classifier, keep offline/default behavior intact, and cover the network boundary with deterministic mocked tests. No wallet connection, signing, submission, real funds, private repository access, provider secrets, or Mainnet capability is required.
 - **High-value expert review — Solana transaction safety:** [#9 Review safe Solana v1 send-path resource bounds](https://github.com/CopyPumpApp/CopyPump/issues/9) — `help wanted`. The task is not to enable v1 sending. It asks for a fail-closed public safety contract around explicit `transactionConfig` resource limits, absolute-lamport priority-fee caps, simulation invariants, deterministic v0/v1 negative fixtures, and submitted-unknown/idempotency/reconciliation behavior. This review is Devnet-hardening work and is not a CopyPump Mainnet- or v1-send-readiness claim.
 
-Broader docs-only, UX-only, checklist-only, and private-runtime benchmark tasks are paused until there is a concrete public slice that makes them directly testable.
+The previous code-first task [#39](https://github.com/CopyPumpApp/CopyPump/issues/39) is complete in [PR #42](https://github.com/CopyPumpApp/CopyPump/pull/42). We are not immediately opening another `good first issue` just to keep the label populated. The next beginner task will be created when it maps to a real public-safe engineering need.
 
-If you want to help but are unsure where to start, open an issue titled `Contributor intro: <your area>` and tell us what you build, test, research, or use. You can also join the [CopyPump Discord](https://discord.gg/DNBQtqw6R) and start in `#questions`, `#devnet-testing`, `#bug-reports`, or `#feature-ideas`.
+If you want to help but #9 does not match your skills, open an issue titled `Contributor intro: <your area>` and tell us what you build, test, research, or use. That lets the maintainer map you to a useful public-safe slice instead of inventing low-value work. You can also join the [CopyPump Discord](https://discord.gg/DNBQtqw6R) and start in `#questions`, `#devnet-testing`, `#bug-reports`, or `#feature-ideas`.
 
 ## At a glance
 
