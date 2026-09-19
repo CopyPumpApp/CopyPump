@@ -28,7 +28,11 @@ A good first contribution can be as simple as:
 4. Keep the change small and focused.
 5. Open a pull request with a short explanation of what changed and how you verified it.
 
-For a code-first starting point, see [#39: add a bounded read-only Devnet `getTransaction` lookup](https://github.com/CopyPumpApp/CopyPump/issues/39). The public validator already has a bounded Devnet cluster-identity check and a merged zero-network transaction-read classifier, so #39 builds directly on runnable code and deterministic tests instead of starting from documentation only.
+The previous code-first task, [#39](https://github.com/CopyPumpApp/CopyPump/issues/39), is now completed in [PR #42](https://github.com/CopyPumpApp/CopyPump/pull/42). It added a bounded, read-only Solana Devnet `getTransaction` helper on top of the existing fail-closed classifier. We are intentionally **not manufacturing another beginner issue just to keep the label populated**. New `good first issue` tasks will be opened when they map to a real, public-safe engineering need.
+
+For experienced Solana transaction/runtime engineers, [#9](https://github.com/CopyPumpApp/CopyPump/issues/9) remains the highest-value public review task: define conservative resource bounds and failure semantics for any future v1 send path without enabling signing or submission.
+
+If you want to contribute but neither path matches your skills, open an issue titled **`Contributor intro: <your area>`** and briefly describe what you build, test, research, or use. We can then point you to a public-safe slice instead of inventing low-value work.
 
 If you are not ready to write code, useful feedback is still valuable. Reproducible UX, performance, documentation, Devnet, and product observations are welcome.
 
