@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Machine-readable public-safe development milestones for CopyPump public surfaces. This file is an allowlist, not a mirror of private engineering state.",
+  "policy": {
+    "minimumAnnouncementImportance": 8,
+    "requiresVerifiedStatus": true,
+    "requiresPublicSafe": true,
+    "mainnetClaimsRequireExplicitEvidence": true,
+    "neverPublishFromPrivateContextAlone": true
+  },
+  "milestones": [
+    {
+      "id": "milestone-feed-baseline-2026-09-10",
+      "date": "2026-09-10",
+      "title": "Public development milestone feed initialized",
+      "status": "verified",
+      "importance": 1,
+      "publicSafe": true,
+      "announce": false,
+      "summary": "CopyPump remains under active development in technical alpha / Solana Devnet hardening. LIVE_MAINNET remains blocked until documented safety prerequisites are completed and independently verified.",
+      "evidence": [
+        "README.md",
+        "docs/DEVNET_STATUS.md",
+        "docs/PROJECT_STATUS.md"
+      ],
+      "constraints": [
+        "This baseline is not a new product milestone and must not be announced.",
+        "Do not infer production readiness, profitability, funding, external audit completion or Mainnet readiness from this entry."
+      ]
+    },
+    {
+      "id": "stage-4ab-public-engineering-update-2026-09-20",
+      "date": "2026-09-20",
+      "title": "Stage 4A/4B scoped storage engineering progress published",
+      "status": "verified",
+      "importance": 9,
+      "publicSafe": true,
+      "announce": true,
+      "summary": "CopyPump Stage 4A and 4B passed their scoped closed-gate synthetic storage engineering acceptance. Price Alerts, bounded active receipts and verified indexed archival reached those engineering checkpoints. Real storage activation and real Devnet trading remain unaccepted, and LIVE_MAINNET stays locked.",
+      "evidence": [
+        "docs/STAGE4_PUBLIC_STATUS.md",
+        "docs/DEVNET_STATUS.md"
+      ],
+      "constraints": [
+        "This is a public engineering-progress announcement, not a production-readiness claim.",
+        "The broader implementation still has unresolved verification gates.",
+        "Do not imply real Devnet trading, Mainnet readiness, profitability, funding or external audit completion."
+      ],
+      "socialDraft": "CopyPump update: Stage 4A/4B passed scoped synthetic storage acceptance. Price Alerts, bounded receipts and verified archival cleared. Storage hardening only: real Devnet trading remains unaccepted, and LIVE_MAINNET stays locked."
+    }
+  ]
+}
