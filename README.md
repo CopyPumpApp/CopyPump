@@ -140,6 +140,16 @@ This repository is the public technical and collaboration surface for CopyPump. 
 
 If you're following the build, **star or watch this repository**. If you can contribute, check the open issues and `CONTRIBUTING.md`.
 
+## Support CopyPump Open Tools
+
+CopyPump Open Tools is available on Giveth for voluntary community support.
+
+Donations help fund public Solana verification tooling, deterministic tests, developer documentation, and other open technical work published for community use and review.
+
+Donations are not investments and do not provide tokens, equity, financial returns, or access to future products.
+
+[Support CopyPump Open Tools on Giveth](https://giveth.io/project/copypump-open-tools)
+
 ## Documentation
 
 - [Public project status](docs/PROJECT_STATUS.md)
