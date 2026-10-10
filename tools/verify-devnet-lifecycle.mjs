@@ -8,154 +8,18 @@ import {
   reconcileDevnetLifecycle
 } from './reconcile-devnet-lifecycle.mjs';
 
-const DEFAULT_TIMEOUT_MS = 5000;
-const HARD_RESPONSE_BYTE_LIMIT = 1_000_000;
-const HARD_RESPONSE_CHUNK_LIMIT = 4096;
-const CHUNK_YIELD_INTERVAL = 64;
-
-class RpcReadError extends Error {
-  constructor(code) {
-    super(code);
-    this.code = code;
-  }
-}
+import {
+  DEFAULT_RPC_TIMEOUT_MS, MAX_RPC_RESPONSE_BYTES,
+  RpcReadError, readBoundedJsonRpc, requireRpcResult
+} from './bounded-json-rpc.mjs';
 
 function result(code, ok = false, errors = [code]) {
   return {
-    ok,
-    code,
-    errors,
+    ok, code, errors,
     receiptEvidenceVerified: false,
     lifecycleVerified: false,
     sendAuthorized: false
   };
-}
-
-function isRecord(value) {
-  return value !== null && typeof value === 'object' && !Array.isArray(value);
-}
-
-function validRpcUrl(value) {
-  try {
-    const url = new URL(value);
-    return url.protocol === 'https:' && url.hostname.length > 0
-      && url.username === '' && url.password === '' && url.hash === '';
-  } catch {
-    return false;
-  }
-}
-
-function validateEnvelope(payload, id) {
-  if (!isRecord(payload) || payload.jsonrpc !== '2.0' || payload.id !== id
-    || Object.hasOwn(payload, 'result') === Object.hasOwn(payload, 'error')) {
-    throw new RpcReadError('RPC_INVALID_RESPONSE');
-  }
-  if (Object.hasOwn(payload, 'error')) {
-    if (!isRecord(payload.error) || !Number.isSafeInteger(payload.error.code)) {
-      throw new RpcReadError('RPC_INVALID_RESPONSE');
-    }
-    throw new RpcReadError(payload.error.code === -32015
-      ? 'RPC_UNSUPPORTED_TRANSACTION_VERSION' : 'RPC_ERROR');
-  }
-}
-
-// One deadline covers fetch AND streaming the body. Promise.race also bounds a
-// faulty injected transport that ignores AbortSignal. No response.text()/json()
-// fallback: those would buffer an unbounded response before checking its size.
-async function readRpc({ rpcUrl, request, fetchImpl, timeoutMs, maxResponseBytes }) {
-  const controller = new AbortController();
-  let reader;
-  let response;
-  let timer;
-
-  const timeout = new Promise((_resolve, reject) => {
-    timer = setTimeout(() => {
-      controller.abort();
-      reject(new RpcReadError('RPC_TIMEOUT'));
-    }, timeoutMs);
-  });
-
-  const read = async () => {
-    response = await fetchImpl(rpcUrl, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', accept: 'application/json' },
-      body: JSON.stringify(request),
-      redirect: 'error',
-      credentials: 'omit',
-      signal: controller.signal
-    });
-    if (controller.signal.aborted) throw new RpcReadError('RPC_TIMEOUT');
-    if (response?.redirected === true) throw new RpcReadError('RPC_REDIRECT_REJECTED');
-    if (!response?.ok) throw new RpcReadError('RPC_UNAVAILABLE');
-
-    const contentLength = response.headers?.get?.('content-length');
-    if (contentLength !== null && contentLength !== undefined) {
-      if (!/^\d+$/.test(contentLength)) throw new RpcReadError('RPC_INVALID_RESPONSE');
-      const declaredSize = Number(contentLength);
-      if (!Number.isSafeInteger(declaredSize) || declaredSize > maxResponseBytes) {
-        throw new RpcReadError('RPC_RESPONSE_TOO_LARGE');
-      }
-    }
-    if (typeof response.body?.getReader !== 'function') {
-      throw new RpcReadError('RPC_INVALID_RESPONSE');
-    }
-
-    reader = response.body.getReader();
-    const decoder = new TextDecoder('utf-8', { fatal: true });
-    const chunks = [];
-    let bytes = 0;
-    let chunkCount = 0;
-    while (true) {
-      if (controller.signal.aborted) throw new RpcReadError('RPC_TIMEOUT');
-      const chunk = await reader.read();
-      if (controller.signal.aborted) throw new RpcReadError('RPC_TIMEOUT');
-      if (chunk.done) break;
-      if (!(chunk.value instanceof Uint8Array) || chunk.value.byteLength === 0) {
-        throw new RpcReadError('RPC_INVALID_RESPONSE');
-      }
-      chunkCount += 1;
-      if (chunkCount > HARD_RESPONSE_CHUNK_LIMIT) throw new RpcReadError('RPC_RESPONSE_TOO_FRAGMENTED');
-      bytes += chunk.value.byteLength;
-      if (bytes > maxResponseBytes) throw new RpcReadError('RPC_RESPONSE_TOO_LARGE');
-      try {
-        chunks.push(decoder.decode(chunk.value, { stream: true }));
-      } catch {
-        throw new RpcReadError('RPC_INVALID_JSON');
-      }
-      // A stream whose reads resolve immediately must still let the deadline
-      // timer run; byte limits alone do not prevent microtask starvation.
-      if (chunkCount % CHUNK_YIELD_INTERVAL === 0) {
-        await new Promise((resolve) => setImmediate(resolve));
-        if (controller.signal.aborted) throw new RpcReadError('RPC_TIMEOUT');
-      }
-    }
-
-    let payload;
-    try {
-      chunks.push(decoder.decode());
-      payload = JSON.parse(chunks.join(''));
-    } catch {
-      throw new RpcReadError('RPC_INVALID_JSON');
-    }
-    validateEnvelope(payload, request.id);
-    return payload;
-  };
-
-  try {
-    return await Promise.race([read(), timeout]);
-  } catch (error) {
-    if (error instanceof RpcReadError) throw error;
-    throw new RpcReadError(controller.signal.aborted ? 'RPC_TIMEOUT' : 'RPC_UNAVAILABLE');
-  } finally {
-    clearTimeout(timer);
-    controller.abort();
-    // Cleanup must not let a faulty stream's cancellation defeat the deadline.
-    try {
-      const cancellation = reader ? reader.cancel() : response?.body?.cancel?.();
-      cancellation?.catch?.(() => {});
-    } catch {}
-    try { reader?.releaseLock(); } catch {}
-  }
 }
 
 /**
@@ -173,8 +37,8 @@ export async function verifyDevnetLifecycle({
   manifest,
   rpcUrl,
   fetchImpl = globalThis.fetch,
-  timeoutMs = DEFAULT_TIMEOUT_MS,
-  maxResponseBytes = HARD_RESPONSE_BYTE_LIMIT
+  timeoutMs = DEFAULT_RPC_TIMEOUT_MS,
+  maxResponseBytes = MAX_RPC_RESPONSE_BYTES
 } = {}) {
   let validation;
   let manifestSnapshot;
@@ -191,23 +55,14 @@ export async function verifyDevnetLifecycle({
   if (rpcUrl === undefined || rpcUrl === null || (typeof rpcUrl === 'string' && rpcUrl.trim() === '')) {
     return result('DEVNET_LIFECYCLE_READ_SKIPPED', true, []);
   }
-  if (typeof rpcUrl !== 'string' || !validRpcUrl(rpcUrl)) return result('RPC_URL_INVALID');
-  if (!Number.isInteger(timeoutMs) || timeoutMs < 100 || timeoutMs > 30000) {
-    return result('RPC_TIMEOUT_INVALID');
-  }
-  if (!Number.isSafeInteger(maxResponseBytes) || maxResponseBytes < 1
-    || maxResponseBytes > HARD_RESPONSE_BYTE_LIMIT) {
-    return result('RPC_RESPONSE_LIMIT_INVALID');
-  }
-  if (typeof fetchImpl !== 'function') return result('RPC_UNAVAILABLE');
-
-  const rpc = (id, method, params) => readRpc({
-    rpcUrl,
-    request: { jsonrpc: '2.0', id, method, params },
-    fetchImpl,
-    timeoutMs,
-    maxResponseBytes
-  });
+  const rpc = async (id, method, params) => {
+    const payload = await readBoundedJsonRpc({
+      rpcUrl, request: { jsonrpc: '2.0', id, method, params },
+      fetchImpl, timeoutMs, maxResponseBytes
+    });
+    requireRpcResult(payload);
+    return payload;
+  };
 
   try {
     const identity = await rpc(1, 'getGenesisHash', []);
@@ -238,7 +93,7 @@ export async function verifyDevnetLifecycle({
 }
 
 function parseCliArgs(argv) {
-  const options = { inputPath: null, rpcUrl: process.env.COPYPUMP_DEVNET_RPC_URL, timeoutMs: DEFAULT_TIMEOUT_MS };
+  const options = { inputPath: null, rpcUrl: process.env.COPYPUMP_DEVNET_RPC_URL, timeoutMs: DEFAULT_RPC_TIMEOUT_MS };
   const flags = new Set();
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];

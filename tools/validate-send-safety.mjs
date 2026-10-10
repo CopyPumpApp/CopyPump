@@ -1,6 +1,7 @@
 // Public, offline consistency model for issue #9. This is not a signer or attester.
 // Protocol references and the caller's trust obligations are in
 // docs/SOLANA_V1_SEND_SAFETY_DRAFT.md. Policy limits have no production defaults.
+import { isBase58Bytes } from './base58.mjs';
 
 export const SEND_SAFETY_SCOPE = "OFFLINE_POLICY_REVIEW_ONLY";
 export const DEVNET_GENESIS_HASH = "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG";
@@ -11,7 +12,6 @@ export const EVIDENCE_COMMITMENT = "confirmed";
 const U64_MAX = (1n << 64n) - 1n;
 const DIGEST = /^[0-9a-f]{64}$/;
 const ID = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$/;
-const BLOCKHASH = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 const record = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
 const uint = (value, min = 0, max = Number.MAX_SAFE_INTEGER) => Number.isSafeInteger(value) && value >= min && value <= max;
 const id = (value) => typeof value === "string" && ID.test(value);
@@ -139,7 +139,7 @@ export function validateSendSafety(input, policy, { nowMs } = {}) {
   const life = shape(x.lifetime, ["kind", "blockhash", "lastValidBlockHeight", "contextSlot", "commitment"], "LIFETIME", reasons);
   if (life.kind !== "recent-blockhash") reasons.push("RECENT_BLOCKHASH_LIFETIME_REQUIRED");
   if (life.commitment !== EVIDENCE_COMMITMENT) reasons.push("LIFETIME_COMMITMENT_INVALID");
-  if (typeof life.blockhash !== "string" || !BLOCKHASH.test(life.blockhash) || !uint(life.lastValidBlockHeight) || !uint(life.contextSlot)) reasons.push("LIFETIME_EVIDENCE_INVALID");
+  if (!isBase58Bytes(life.blockhash, 32) || !uint(life.lastValidBlockHeight) || !uint(life.contextSlot)) reasons.push("LIFETIME_EVIDENCE_INVALID");
   if (estimate.blockhash !== life.blockhash || final.blockhash !== life.blockhash) reasons.push("SIMULATION_BLOCKHASH_MISMATCH");
   if (!uint(current.contextSlot) || life.contextSlot > current.contextSlot || estimate.contextSlot < life.contextSlot || final.contextSlot < life.contextSlot || fee.contextSlot < life.contextSlot) reasons.push("LIFETIME_CONTEXT_INVALID");
   // Block height, never slot or a wall-clock approximation, controls expiry.
