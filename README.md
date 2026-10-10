@@ -33,6 +33,8 @@ The public code also includes a pure, fail-closed `getTransaction` response clas
 
 Two additional offline review modules check supplied v1 resource/fee/simulation evidence and classify recovery after an unknown submission result. They include synthetic examples and regression tests for issue #9. Every outcome keeps `sendAuthorized: false`; these are public consistency models, not an enabled trading path. See the [review contract](docs/SOLANA_V1_SEND_SAFETY_DRAFT.md).
 
+For the real Devnet evidence milestone, a new bounded reader can compare three finalized transaction receipts against an expected token-account lifecycle, native balance changes and network fees. Its pure reconciler checks signatures, account identities, exact amounts and chronological continuity. It reports the limited receipt scope explicitly; swap interpretation, operation-record authenticity, full-wallet holdings and PnL still need separate evidence. See [Devnet lifecycle verification](docs/DEVNET_LIFECYCLE_VERIFICATION.md).
+
 ```bash
 git clone https://github.com/CopyPumpApp/CopyPump.git
 cd CopyPump
@@ -54,7 +56,7 @@ See [public contributor tools](tools/README.md). These tools do **not** prove th
 We are intentionally keeping the active queue small instead of manufacturing issues purely to create activity.
 
 - **Implemented review surface — Solana transaction safety:** [#9](https://github.com/CopyPumpApp/CopyPump/issues/9) now has pure resource-policy and unknown-submission recovery models, synthetic examples and deterministic tests. External runtime review is still welcome. The [contract](docs/SOLANA_V1_SEND_SAFETY_DRAFT.md) explains the policy, trusted-adapter boundary and remaining integration work; no v1 send path is enabled.
-- **Open evidence milestone:** [#2](https://github.com/CopyPumpApp/CopyPump/issues/2) still requires verified real Devnet lifecycle evidence. Passing synthetic tests does not complete that milestone.
+- **Open evidence milestone:** [#2](https://github.com/CopyPumpApp/CopyPump/issues/2) now has a [bounded receipt verifier and runbook](docs/DEVNET_LIFECYCLE_VERIFICATION.md). It still requires reviewed real Devnet lifecycle evidence; passing synthetic tests or matching a declared token-account pattern does not complete the milestone.
 - **Ongoing contributor invitation:** [#13](https://github.com/CopyPumpApp/CopyPump/issues/13) remains available for people interested in helping with public work.
 
 The previous code-first task [#39](https://github.com/CopyPumpApp/CopyPump/issues/39) is complete in [PR #42](https://github.com/CopyPumpApp/CopyPump/pull/42). We are not immediately opening another `good first issue` just to keep the label populated. The next beginner task will be created when it maps to a real public-safe engineering need.
@@ -162,6 +164,7 @@ Donations are not investments and do not provide tokens, equity, financial retur
 - [Devnet status](docs/DEVNET_STATUS.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Public contributor tools](tools/README.md)
+- [Devnet lifecycle verification](docs/DEVNET_LIFECYCLE_VERIFICATION.md)
 - [Security policy](SECURITY.md)
 - [Contributing](CONTRIBUTING.md)
 - [Maintainers and ownership](MAINTAINERS.md)

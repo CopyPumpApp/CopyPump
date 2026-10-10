@@ -55,6 +55,21 @@ test('accepts a complete schema-valid verified manifest', () => {
   const result = validateEvidenceManifest(verifiedManifest());
   assert.equal(result.ok, true);
   assert.deepEqual(result.errors, []);
+  assert.equal(result.verificationScope, 'MANIFEST_SCHEMA_ONLY');
+  assert.equal(result.lifecycleVerified, false);
+});
+
+test('author-supplied verified flags never become verifier-established lifecycle proof', () => {
+  const manifest = verifiedManifest();
+  for (const step of manifest.lifecycle) {
+    step.evidenceType = 'application';
+    step.evidence = { source: 'caller assertion' };
+  }
+  const result = validateEvidenceManifest(manifest);
+  assert.equal(result.ok, true);
+  assert.equal(result.verificationScope, 'MANIFEST_SCHEMA_ONLY');
+  assert.equal(result.lifecycleVerified, false);
+  assert.equal(validateEvidenceManifest(null).lifecycleVerified, false);
 });
 
 test('rejects Mainnet manifests', () => {
@@ -117,6 +132,8 @@ test('accepts the Solana Devnet genesis hash', async () => {
   assert.equal(result.ok, true);
   assert.equal(result.rpc.code, 'RPC_DEVNET_CONFIRMED');
   assert.equal(result.rpc.network, 'solana-devnet');
+  assert.equal(result.verificationScope, 'MANIFEST_SCHEMA_ONLY');
+  assert.equal(result.lifecycleVerified, false);
   assert.equal(requests.length, 1);
   assert.equal(requests[0].method, 'getGenesisHash');
   assert.deepEqual(requests[0].params, []);
