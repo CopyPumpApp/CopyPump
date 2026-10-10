@@ -1,6 +1,11 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isBase58Bytes } from './base58.mjs';
+import {
+  DEFAULT_RPC_TIMEOUT_MS, MAX_RPC_RESPONSE_BYTES, RpcReadError,
+  readBoundedJsonRpc, requireRpcResult
+} from './bounded-json-rpc.mjs';
 
 export const REQUIRED_LIFECYCLE_STEPS = [
   'BUY',
@@ -10,14 +15,11 @@ export const REQUIRED_LIFECYCLE_STEPS = [
 ];
 
 export const SOLANA_DEVNET_GENESIS_HASH = 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG';
-export const DEFAULT_RPC_TIMEOUT_MS = 5000;
+export { DEFAULT_RPC_TIMEOUT_MS };
 
 const VALID_STATUSES = new Set(['draft', 'partial', 'verified']);
 const VALID_EVIDENCE_TYPES = new Set(['onchain', 'application']);
-const BASE58_SIGNATURE = /^[1-9A-HJ-NP-Za-km-z]{64,88}$/;
 const FORBIDDEN_KEY = /(seed|mnemonic|private.?key|api.?key|secret|credential|auth.?token|access.?token|cookie)/i;
-const MIN_RPC_TIMEOUT_MS = 100;
-const MAX_RPC_TIMEOUT_MS = 30000;
 
 function isObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -101,7 +103,7 @@ export function validateEvidenceManifest(manifest) {
 
       if (step.evidenceType === 'onchain' && step.verified === true) {
         const signature = step.evidence.transactionSignature;
-        if (typeof signature !== 'string' || !BASE58_SIGNATURE.test(signature)) {
+        if (!isBase58Bytes(signature, 64)) {
           errors.push(`${where}.evidence.transactionSignature must be a syntactically valid Solana signature when an on-chain step is marked verified`);
         }
       }
@@ -142,56 +144,31 @@ export function validateEvidenceManifest(manifest) {
 export async function verifyDevnetRpcIdentity({
   rpcUrl,
   fetchImpl = globalThis.fetch,
-  timeoutMs = DEFAULT_RPC_TIMEOUT_MS
+  timeoutMs = DEFAULT_RPC_TIMEOUT_MS,
+  maxResponseBytes = MAX_RPC_RESPONSE_BYTES
 } = {}) {
   if (typeof rpcUrl !== 'string' || rpcUrl.trim().length === 0) {
     return { ok: false, code: 'RPC_URL_REQUIRED', error: 'Solana RPC URL is required for the optional identity check' };
   }
-
-  if (!Number.isInteger(timeoutMs) || timeoutMs < MIN_RPC_TIMEOUT_MS || timeoutMs > MAX_RPC_TIMEOUT_MS) {
-    return {
-      ok: false,
-      code: 'RPC_TIMEOUT_INVALID',
-      error: `RPC timeout must be an integer between ${MIN_RPC_TIMEOUT_MS} and ${MAX_RPC_TIMEOUT_MS} milliseconds`
-    };
-  }
-
-  if (typeof fetchImpl !== 'function') {
-    return { ok: false, code: 'RPC_UNAVAILABLE', error: 'Solana RPC identity check is unavailable in this runtime' };
-  }
-
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
-
   try {
-    const response = await fetchImpl(rpcUrl, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'getGenesisHash', params: [] }),
-      signal: controller.signal
+    const payload = await readBoundedJsonRpc({
+      rpcUrl,
+      request: { jsonrpc: '2.0', id: 1, method: 'getGenesisHash', params: [] },
+      fetchImpl, timeoutMs, maxResponseBytes
     });
-
-    if (!response?.ok) {
-      return { ok: false, code: 'RPC_UNAVAILABLE', error: 'Solana RPC identity check failed' };
+    const genesisHash = requireRpcResult(payload);
+    if (typeof genesisHash !== 'string') {
+      throw new RpcReadError('RPC_INVALID_RESPONSE');
     }
-
-    const payload = await response.json();
-    if (payload?.error || typeof payload?.result !== 'string') {
-      return { ok: false, code: 'RPC_INVALID_RESPONSE', error: 'Solana RPC identity response was invalid' };
-    }
-
-    if (payload.result !== SOLANA_DEVNET_GENESIS_HASH) {
+    if (genesisHash !== SOLANA_DEVNET_GENESIS_HASH) {
       return { ok: false, code: 'RPC_WRONG_CLUSTER', error: 'RPC endpoint is not Solana Devnet' };
     }
-
-    return { ok: true, code: 'RPC_DEVNET_CONFIRMED', network: 'solana-devnet', genesisHash: payload.result };
+    return { ok: true, code: 'RPC_DEVNET_CONFIRMED', network: 'solana-devnet', genesisHash };
   } catch (error) {
-    if (error?.name === 'AbortError') {
-      return { ok: false, code: 'RPC_TIMEOUT', error: `Solana RPC identity check timed out after ${timeoutMs} milliseconds` };
-    }
-    return { ok: false, code: 'RPC_UNAVAILABLE', error: 'Solana RPC identity check failed' };
-  } finally {
-    clearTimeout(timeout);
+    const code = error instanceof RpcReadError ? error.code : 'RPC_UNAVAILABLE';
+    return { ok: false, code, error: code === 'RPC_TIMEOUT'
+      ? 'Solana RPC identity check timed out'
+      : 'Solana RPC identity check failed its bounded read contract' };
   }
 }
 

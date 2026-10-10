@@ -153,3 +153,7 @@ The initial implementation received a separate internal AI-assisted code review;
 - **[#13](https://github.com/CopyPumpApp/CopyPump/issues/13):** the contributor invitation remains an ongoing invitation, not an implementation acceptance test.
 
 These modules do not classify scam tokens, prove profitability, complete a real trading lifecycle, authorize Mainnet, expose private engineering code or establish production readiness.
+
+## Shared structural identity checks
+
+The public policy, recovery and receipt models use `tools/base58.mjs` for exact decoded byte widths: 32 bytes for account/hash identities and 64 bytes for transaction signatures. Matching strings with an invalid decoded width are rejected even when their printed alphabet and length look plausible. Leading zero bytes are counted explicitly. This structural check does not authenticate a signature, message, RPC provider, owner action or cluster; the trusted-adapter obligations above remain unchanged.

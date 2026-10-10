@@ -48,7 +48,7 @@ function verifiedManifest() {
 }
 
 function jsonResponse(payload, ok = true) {
-  return { ok, json: async () => payload };
+  return new Response(JSON.stringify(payload), { status: ok ? 200 : 503 });
 }
 
 test('accepts a complete schema-valid verified manifest', () => {
@@ -152,7 +152,7 @@ test('rejects an RPC endpoint on the wrong cluster', async () => {
 });
 
 test('times out an unavailable RPC without echoing the URL', async () => {
-  const rpcUrl = 'https://user:secret@example.invalid/devnet?api-key=must-not-leak';
+  const rpcUrl = 'https://example.invalid/devnet?api-key=must-not-leak';
   const result = await verifyDevnetRpcIdentity({
     rpcUrl,
     timeoutMs: 100,

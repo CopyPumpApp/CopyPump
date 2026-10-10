@@ -6,7 +6,7 @@ import { readDevnetTransaction } from '../tools/read-devnet-transaction.mjs';
 const syntheticSignature = '1'.repeat(64);
 
 function jsonResponse(payload, ok = true) {
-  return { ok, json: async () => payload };
+  return new Response(JSON.stringify(payload), { status: ok ? 200 : 503 });
 }
 
 function successfulPayload(version = 1) {
@@ -156,7 +156,7 @@ test('rejects the wrong cluster before transaction lookup', async () => {
 });
 
 test('times out transaction lookup without leaking the RPC URL', async () => {
-  const rpcUrl = 'https://user:secret@example.invalid/devnet?api-key=must-not-leak';
+  const rpcUrl = 'https://example.invalid/devnet?api-key=must-not-leak';
   const result = await readDevnetTransaction({
     rpcUrl,
     transactionSignature: syntheticSignature,

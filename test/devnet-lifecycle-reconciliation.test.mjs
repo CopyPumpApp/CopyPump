@@ -43,15 +43,20 @@ test('invalid and unknown manifest fields cannot be used as stronger evidence cl
 });
 
 test('account identities require exact decoded public-key width and distinct roles', () => {
-  const f = fresh(); f.manifest.owner = '2'.repeat(32);
-  rejected(f, 'MANIFEST_ACCOUNT_IDENTITY_INVALID');
+  for (const owner of ['2'.repeat(32), '1'.repeat(33), 'z'.repeat(44)]) {
+    const f = fresh(); f.manifest.owner = owner;
+    rejected(f, 'MANIFEST_ACCOUNT_IDENTITY_INVALID');
+  }
+  const f = fresh();
   f.manifest.owner = f.manifest.positionTokenAccount;
   rejected(f, 'MANIFEST_ACCOUNT_IDENTITY_INVALID');
 });
 
 test('trade signature byte width is checked, not just its printable alphabet', () => {
-  const f = fresh(); f.manifest.trades[0].transactionSignature = '2'.repeat(64);
-  rejected(f, 'BUY_IDENTITY_INVALID');
+  for (const signature of ['2'.repeat(64), '1'.repeat(65), 'z'.repeat(88)]) {
+    const f = fresh(); f.manifest.trades[0].transactionSignature = signature;
+    rejected(f, 'BUY_IDENTITY_INVALID');
+  }
 });
 
 test('each trade needs a different operation and signature', () => {

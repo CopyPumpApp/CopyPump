@@ -1,8 +1,8 @@
 // Offline public review model. No signing, submission, storage, RPC or clock.
+import { isBase58Bytes } from './base58.mjs';
+
 // This constant matches the repository's read-only Devnet identity gate.
 const DEVNET_GENESIS_HASH = 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG';
-const BASE58_SIGNATURE = /^[1-9A-HJ-NP-Za-km-z]{64,88}$/;
-const BASE58_ADDRESS_OR_HASH = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 const MESSAGE_DIGEST = /^[a-f0-9]{64}$/;
 const STAGES = new Set(['COMMITTED_BEFORE_SEND', 'SUBMISSION_UNKNOWN']);
 const CONFIRMATION_STATUSES = new Set([null, 'processed', 'confirmed', 'finalized']);
@@ -27,7 +27,7 @@ function isLabel(value) {
 
 function validBinding(value) {
   return BINDING_FIELDS.every((field) => isLabel(value[field]))
-    && BASE58_SIGNATURE.test(value.signature)
+    && isBase58Bytes(value.signature, 64)
     && MESSAGE_DIGEST.test(value.messageDigest);
 }
 
@@ -65,15 +65,12 @@ function validCheckpoint(checkpoint, attempt) {
 function validExpiry(expiry) {
   if (!isRecord(expiry)) return false;
   if (expiry.kind === 'recent-blockhash') {
-    return typeof expiry.blockhash === 'string'
-      && BASE58_ADDRESS_OR_HASH.test(expiry.blockhash)
+    return isBase58Bytes(expiry.blockhash, 32)
       && isSlotOrHeight(expiry.lastValidBlockHeight);
   }
   if (expiry.kind === 'durable-nonce') {
-    return typeof expiry.nonceAccount === 'string'
-      && BASE58_ADDRESS_OR_HASH.test(expiry.nonceAccount)
-      && typeof expiry.nonceValue === 'string'
-      && BASE58_ADDRESS_OR_HASH.test(expiry.nonceValue);
+    return isBase58Bytes(expiry.nonceAccount, 32)
+      && isBase58Bytes(expiry.nonceValue, 32);
   }
   return false;
 }

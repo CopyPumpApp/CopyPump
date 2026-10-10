@@ -28,6 +28,17 @@ A good first contribution can be as simple as:
 4. Keep the change small and focused.
 5. Open a pull request with a short explanation of what changed and how you verified it.
 
+### Open implementation tasks
+
+Two scoped tasks are ready for contributors; both work with synthetic public fixtures and require no wallet or private-code access:
+
+| Task | Deliverable |
+| --- | --- |
+| [#49 — Actual-message inspector](https://github.com/CopyPumpApp/CopyPump/issues/49) | Decode bounded unsigned v1 message bytes and derive canonical message/intent digests for review. |
+| [#50 — Explicit account creation/closure evidence](https://github.com/CopyPumpApp/CopyPump/issues/50) | Extend classic-SPL receipt checks only where instruction and account evidence justify creation/closure. |
+
+These are Solana engineering tasks with acceptance and negative-test criteria, not beginner placeholders. They do not enable sending or complete the real Devnet lifecycle milestone.
+
 The previous code-first task, [#39](https://github.com/CopyPumpApp/CopyPump/issues/39), is now completed in [PR #42](https://github.com/CopyPumpApp/CopyPump/pull/42). It added a bounded, read-only Solana Devnet `getTransaction` helper on top of the existing fail-closed classifier. We are intentionally **not manufacturing another beginner issue just to keep the label populated**. New `good first issue` tasks will be opened when they map to a real, public-safe engineering need.
 
 The design/fixture contribution for [#9](https://github.com/CopyPumpApp/CopyPump/issues/9) is implemented as two pure public review modules with synthetic examples and deterministic tests. Experienced Solana transaction/runtime engineers can now challenge executable resource bounds and recovery semantics; see the [review contract](docs/SOLANA_V1_SEND_SAFETY_DRAFT.md) and [run instructions](tools/README.md). External review remains welcome, and no signing or submission path is enabled. Verified real Devnet lifecycle evidence in [#2](https://github.com/CopyPumpApp/CopyPump/issues/2) remains a separate open milestone; [#13](https://github.com/CopyPumpApp/CopyPump/issues/13) is the ongoing contributor invitation.

@@ -1,22 +1,21 @@
 import { classifyTransactionReadResponse } from './classify-transaction-read-response.mjs';
+import { verifyDevnetRpcIdentity } from './validate-devnet-evidence.mjs';
+import { isBase58Bytes } from './base58.mjs';
 import {
-  DEFAULT_RPC_TIMEOUT_MS,
-  verifyDevnetRpcIdentity
-} from './validate-devnet-evidence.mjs';
+  DEFAULT_RPC_TIMEOUT_MS, MAX_RPC_RESPONSE_BYTES,
+  RpcReadError, readBoundedJsonRpc
+} from './bounded-json-rpc.mjs';
 
-const BASE58_SIGNATURE = /^[1-9A-HJ-NP-Za-km-z]{64,88}$/;
 const FAILURE_KINDS = new Set([
-  'invalid_response',
-  'rpc_error',
-  'unsupported_transaction_version'
+  'invalid_response', 'rpc_error', 'unsupported_transaction_version'
 ]);
 
-function skipped() {
+function result(ok, code, transaction = null) {
   return {
-    ok: true,
-    code: 'RPC_TRANSACTION_READ_SKIPPED',
-    network: 'solana-devnet',
-    transaction: null
+    ok, code, network: 'solana-devnet',
+    verificationScope: 'TRANSACTION_READ_CLASSIFICATION',
+    lifecycleVerified: false, sendAuthorized: false,
+    transaction
   };
 }
 
@@ -24,109 +23,42 @@ export async function readDevnetTransaction({
   rpcUrl,
   transactionSignature,
   fetchImpl = globalThis.fetch,
-  timeoutMs = DEFAULT_RPC_TIMEOUT_MS
+  timeoutMs = DEFAULT_RPC_TIMEOUT_MS,
+  maxResponseBytes = MAX_RPC_RESPONSE_BYTES
 } = {}) {
   const hasRpcUrl = typeof rpcUrl === 'string' && rpcUrl.trim().length > 0;
   const hasSignature = typeof transactionSignature === 'string' && transactionSignature.trim().length > 0;
+  if (!hasRpcUrl || !hasSignature) return result(true, 'RPC_TRANSACTION_READ_SKIPPED');
+  if (!isBase58Bytes(transactionSignature, 64)) return result(false, 'TRANSACTION_SIGNATURE_INVALID');
 
-  if (!hasRpcUrl || !hasSignature) return skipped();
-
-  if (!BASE58_SIGNATURE.test(transactionSignature)) {
-    return {
-      ok: false,
-      code: 'TRANSACTION_SIGNATURE_INVALID',
-      network: 'solana-devnet',
-      transaction: null
-    };
-  }
-
-  const identity = await verifyDevnetRpcIdentity({
-    rpcUrl,
-    fetchImpl,
-    timeoutMs
-  });
-
-  if (!identity.ok) {
-    return {
-      ok: false,
-      code: identity.code,
-      network: 'solana-devnet',
-      error: identity.error,
-      transaction: null
-    };
-  }
-
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  const identity = await verifyDevnetRpcIdentity({ rpcUrl, fetchImpl, timeoutMs, maxResponseBytes });
+  if (!identity.ok) return result(false, identity.code);
 
   try {
-    const response = await fetchImpl(rpcUrl, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 2,
-        method: 'getTransaction',
-        params: [
-          transactionSignature,
-          {
-            commitment: 'confirmed',
-            encoding: 'json',
-            maxSupportedTransactionVersion: 1
-          }
-        ]
-      }),
-      signal: controller.signal
+    const payload = await readBoundedJsonRpc({
+      rpcUrl,
+      request: {
+        jsonrpc: '2.0', id: 2, method: 'getTransaction',
+        params: [transactionSignature, {
+          commitment: 'confirmed', encoding: 'json', maxSupportedTransactionVersion: 1
+        }]
+      },
+      fetchImpl, timeoutMs, maxResponseBytes
     });
-
-    if (!response?.ok) {
-      return {
-        ok: false,
-        code: 'RPC_UNAVAILABLE',
-        network: 'solana-devnet',
-        transaction: null
-      };
+    let transaction = classifyTransactionReadResponse(payload);
+    if (transaction.kind === 'transaction_succeeded' || transaction.kind === 'transaction_failed') {
+      const signatures = payload.result.transaction.signatures;
+      if (!Array.isArray(signatures) || signatures.length < 1 || signatures.length > 256
+        || signatures[0] !== transactionSignature
+        || !signatures.every((signature) => isBase58Bytes(signature, 64))
+        || !['legacy', 0, 1].includes(payload.result.version)) {
+        transaction = { kind: 'invalid_response' };
+      }
     }
-
-    let payload;
-    try {
-      payload = await response.json();
-    } catch {
-      return {
-        ok: false,
-        code: 'RPC_INVALID_RESPONSE',
-        network: 'solana-devnet',
-        transaction: { kind: 'invalid_response' }
-      };
-    }
-
-    const transaction = classifyTransactionReadResponse(payload);
-    return {
-      ok: !FAILURE_KINDS.has(transaction.kind),
-      code: FAILURE_KINDS.has(transaction.kind)
-        ? 'RPC_TRANSACTION_READ_REJECTED'
-        : 'RPC_TRANSACTION_CLASSIFIED',
-      network: 'solana-devnet',
-      transaction
-    };
+    return result(!FAILURE_KINDS.has(transaction.kind), FAILURE_KINDS.has(transaction.kind)
+      ? 'RPC_TRANSACTION_READ_REJECTED' : 'RPC_TRANSACTION_CLASSIFIED', transaction);
   } catch (error) {
-    if (error?.name === 'AbortError') {
-      return {
-        ok: false,
-        code: 'RPC_TIMEOUT',
-        network: 'solana-devnet',
-        error: `Solana transaction read timed out after ${timeoutMs} milliseconds`,
-        transaction: null
-      };
-    }
-
-    return {
-      ok: false,
-      code: 'RPC_UNAVAILABLE',
-      network: 'solana-devnet',
-      transaction: null
-    };
-  } finally {
-    clearTimeout(timeout);
+    const code = error instanceof RpcReadError ? error.code : 'RPC_UNAVAILABLE';
+    return result(false, code);
   }
 }

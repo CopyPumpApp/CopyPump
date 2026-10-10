@@ -115,6 +115,47 @@ test('missing committed identity or checkpoint fields fail closed', () => {
   }
 });
 
+test('matching signatures with invalid decoded widths cannot enter recovery', () => {
+  for (const signature of ['1'.repeat(65), '2'.repeat(64), 'z'.repeat(88)]) {
+    const { attempt, observation } = sample();
+    attempt.signature = observation.signature = signature;
+    observation.status = finalized();
+    assertHeld(classifySubmissionRecovery(attempt, observation), 'invalid_attempt');
+  }
+});
+
+test('an invalid-width observed signature is rejected before finalized reconciliation', () => {
+  const { attempt, observation } = sample();
+  observation.signature = '1'.repeat(65);
+  observation.status = finalized();
+  assertHeld(classifySubmissionRecovery(attempt, observation), 'invalid_observation');
+});
+
+test('a recent blockhash with invalid decoded width invalidates the attempt', () => {
+  for (const blockhash of ['1'.repeat(33), '2'.repeat(32), 'z'.repeat(44)]) {
+    const { attempt, observation } = sample();
+    attempt.expiry.blockhash = blockhash;
+    observation.status = finalized();
+    assertHeld(classifySubmissionRecovery(attempt, observation), 'invalid_attempt');
+  }
+});
+
+test('valid signature and blockhash width boundaries retain the reconciliation-only outcome', () => {
+  for (const [signature, blockhash] of [
+    ['1'.repeat(63) + '2', '1'.repeat(31) + '2'],
+    ['2' + '1'.repeat(87), '2' + '1'.repeat(43)]
+  ]) {
+    const { attempt, observation } = sample();
+    attempt.signature = observation.signature = signature;
+    attempt.expiry.blockhash = blockhash;
+    observation.status = finalized();
+    assert.deepEqual(classifySubmissionRecovery(attempt, observation), {
+      kind: 'finalized_success', action: 'RECONCILE', reservation: 'KEEP_UNTIL_RECONCILED',
+      sendAuthorized: false, replacementAllowed: false
+    });
+  }
+});
+
 test('unsigned, uncommitted and unsupported attempt stages cannot enter recovery', () => {
   for (const stage of ['PREPARED', 'SIGNED', 'SUBMITTED', 'RETRY', '', null]) {
     const { attempt, observation } = sample();
@@ -149,7 +190,7 @@ test('each changed provenance component is rejected before accepting terminal su
   const replacements = {
     operationId: 'different-operation',
     attemptId: 'different-attempt',
-    signature: '2'.repeat(64),
+    signature: '1'.repeat(63) + '2',
     messageDigest: 'a'.repeat(64),
     network: 'solana-mainnet',
     genesisHash: 'different-genesis',
@@ -275,11 +316,22 @@ test('durable-nonce lifetime is never inferred from recent-blockhash heights', (
     attempt.expiry = {
       kind: 'durable-nonce',
       nonceAccount: '1'.repeat(32),
-      nonceValue: '2'.repeat(32)
+      nonceValue: '1'.repeat(31) + '2'
     };
     observation.status = status;
     observation.blockHeight = Number.MAX_SAFE_INTEGER;
     assertHeld(classifySubmissionRecovery(attempt, observation), 'unsupported_expiry');
+  }
+});
+
+test('durable-nonce account and value require exact 32-byte identities before the unsupported hold', () => {
+  for (const field of ['nonceAccount', 'nonceValue']) {
+    const { attempt, observation } = sample();
+    attempt.expiry = {
+      kind: 'durable-nonce', nonceAccount: '1'.repeat(32), nonceValue: '1'.repeat(31) + '2'
+    };
+    attempt.expiry[field] = '1'.repeat(33);
+    assertHeld(classifySubmissionRecovery(attempt, observation), 'invalid_attempt');
   }
 });
 

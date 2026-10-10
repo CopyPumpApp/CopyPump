@@ -1,11 +1,12 @@
 // Pure reconciliation of supplied public RPC receipts. No wallet, network or I/O.
 // RPC trust and unproved trade/accounting claims are explicit in
 // docs/DEVNET_LIFECYCLE_VERIFICATION.md. This is not milestone acceptance.
+import { isBase58Bytes } from './base58.mjs';
+
 export const DEVNET_GENESIS_HASH = 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG';
 export const CLASSIC_TOKEN_PROGRAM = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
 export const LIFECYCLE_RECEIPT_SCOPE = 'DEVNET_TRACKED_ACCOUNT_RECEIPTS';
 const STEPS = ['BUY', 'PARTIAL_SELL', 'FULL_SELL'];
-const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const U64_MAX = (1n << 64n) - 1n;
 const MAX_ACCOUNTS = 256;
 const own = (value, key) => Object.hasOwn(value, key);
@@ -16,20 +17,6 @@ function object(value) {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) return false;
   const prototype = Object.getPrototypeOf(value);
   return prototype === Object.prototype || prototype === null;
-}
-
-function base58Bytes(value, bytes) {
-  if (typeof value !== 'string' || value.length < bytes || value.length > (bytes === 32 ? 44 : 88)) return false;
-  let number = 0n;
-  for (const character of value) {
-    const digit = ALPHABET.indexOf(character);
-    if (digit < 0) return false;
-    number = number * 58n + BigInt(digit);
-  }
-  let leadingZeroes = 0;
-  while (value[leadingZeroes] === '1') leadingZeroes += 1;
-  const bodyBytes = number === 0n ? 0 : Math.ceil(number.toString(2).length / 8);
-  return leadingZeroes + bodyBytes === bytes;
 }
 
 function amount(value, signed = false) {
@@ -49,7 +36,7 @@ export function validateLifecycleManifest(manifest) {
   const errors = [];
   const m = shape(manifest, ['schemaVersion', 'network', 'owner', 'positionMint', 'positionTokenAccount', 'decimals', 'position', 'trades'], 'MANIFEST', errors);
   if (m.schemaVersion !== 1 || m.network !== 'solana-devnet') errors.push('MANIFEST_DEVNET_SCHEMA_REQUIRED');
-  if (![m.owner, m.positionMint, m.positionTokenAccount].every((key) => base58Bytes(key, 32)) || new Set([m.owner, m.positionMint, m.positionTokenAccount]).size !== 3) errors.push('MANIFEST_ACCOUNT_IDENTITY_INVALID');
+  if (![m.owner, m.positionMint, m.positionTokenAccount].every((key) => isBase58Bytes(key, 32)) || new Set([m.owner, m.positionMint, m.positionTokenAccount]).size !== 3) errors.push('MANIFEST_ACCOUNT_IDENTITY_INVALID');
   if (!uint(m.decimals, 255)) errors.push('MANIFEST_DECIMALS_INVALID');
   const position = shape(m.position, ['afterOperationId', 'rawAmount'], 'POSITION', errors);
   if (!label(position.afterOperationId) || amount(position.rawAmount) === null) errors.push('POSITION_BINDING_INVALID');
@@ -62,7 +49,7 @@ export function validateLifecycleManifest(manifest) {
     const step = STEPS[index];
     const trade = shape(value, ['step', 'operationId', 'transactionSignature', 'expectedPreAmount', 'expectedPostAmount', 'expectedFeeLamports', 'expectedOwnerLamportDelta'], step, errors);
     if (trade.step !== step) errors.push('TRADE_ORDER_INVALID');
-    if (!label(trade.operationId) || !base58Bytes(trade.transactionSignature, 64)) errors.push(step + '_IDENTITY_INVALID');
+    if (!label(trade.operationId) || !isBase58Bytes(trade.transactionSignature, 64)) errors.push(step + '_IDENTITY_INVALID');
     if (amount(trade.expectedPreAmount) === null || amount(trade.expectedPostAmount) === null || amount(trade.expectedFeeLamports) === null || amount(trade.expectedOwnerLamportDelta, true) === null) errors.push(step + '_EXPECTED_AMOUNTS_INVALID');
     return trade;
   });
@@ -107,7 +94,7 @@ function envelope(payload, id, prefix, errors) {
 
 function accountKeys(transaction, meta, version, prefix, errors) {
   const message = transaction.message;
-  if (!object(message) || !Array.isArray(message.accountKeys) || message.accountKeys.length === 0 || message.accountKeys.length > MAX_ACCOUNTS || !message.accountKeys.every((key) => base58Bytes(key, 32))) {
+  if (!object(message) || !Array.isArray(message.accountKeys) || message.accountKeys.length === 0 || message.accountKeys.length > MAX_ACCOUNTS || !message.accountKeys.every((key) => isBase58Bytes(key, 32))) {
     errors.push(prefix + '_RAW_ACCOUNT_KEYS_REQUIRED'); return null;
   }
   const header = message.header;
@@ -134,7 +121,7 @@ function accountKeys(transaction, meta, version, prefix, errors) {
     let readonlyCount = 0;
     if (message.addressTableLookups.length > MAX_ACCOUNTS) { errors.push(prefix + '_LOOKUPS_INVALID'); return null; }
     for (const lookup of message.addressTableLookups) {
-      if (!object(lookup) || !base58Bytes(lookup.accountKey, 32) || !Array.isArray(lookup.writableIndexes) || !Array.isArray(lookup.readonlyIndexes) || lookup.writableIndexes.length + lookup.readonlyIndexes.length > MAX_ACCOUNTS || ![...lookup.writableIndexes, ...lookup.readonlyIndexes].every((index) => uint(index, 255)) || new Set([...lookup.writableIndexes, ...lookup.readonlyIndexes]).size !== lookup.writableIndexes.length + lookup.readonlyIndexes.length) {
+      if (!object(lookup) || !isBase58Bytes(lookup.accountKey, 32) || !Array.isArray(lookup.writableIndexes) || !Array.isArray(lookup.readonlyIndexes) || lookup.writableIndexes.length + lookup.readonlyIndexes.length > MAX_ACCOUNTS || ![...lookup.writableIndexes, ...lookup.readonlyIndexes].every((index) => uint(index, 255)) || new Set([...lookup.writableIndexes, ...lookup.readonlyIndexes]).size !== lookup.writableIndexes.length + lookup.readonlyIndexes.length) {
         errors.push(prefix + '_LOOKUPS_INVALID'); return null;
       }
       writableCount += lookup.writableIndexes.length;
@@ -149,7 +136,7 @@ function accountKeys(transaction, meta, version, prefix, errors) {
     errors.push(prefix + '_UNEXPECTED_LOADED_ADDRESSES'); return null;
   }
   const keys = [...message.accountKeys, ...loaded];
-  if (keys.length > MAX_ACCOUNTS || !loaded.every((key) => base58Bytes(key, 32)) || new Set(keys).size !== keys.length) {
+  if (keys.length > MAX_ACCOUNTS || !loaded.every((key) => isBase58Bytes(key, 32)) || new Set(keys).size !== keys.length) {
     errors.push(prefix + '_ACCOUNT_KEYS_INVALID'); return null;
   }
   const writable = keys.map((_key, index) => index < staticCount
@@ -198,7 +185,7 @@ function receipt(manifest, trade, entry, status, statusContextSlot, index, error
   }
   if (!['legacy', 0, 1].includes(tx.version)) { errors.push(prefix + '_VERSION_UNSUPPORTED'); return null; }
   if (!uint(tx.slot) || tx.slot !== status.slot || tx.slot > statusContextSlot) errors.push(prefix + '_SLOT_BINDING_MISMATCH');
-  if (!Array.isArray(tx.transaction.signatures) || tx.transaction.signatures.length === 0 || tx.transaction.signatures.length > MAX_ACCOUNTS || tx.transaction.signatures[0] !== trade.transactionSignature || !tx.transaction.signatures.every((signature) => base58Bytes(signature, 64))) errors.push(prefix + '_SIGNATURE_MISMATCH');
+  if (!Array.isArray(tx.transaction.signatures) || tx.transaction.signatures.length === 0 || tx.transaction.signatures.length > MAX_ACCOUNTS || tx.transaction.signatures[0] !== trade.transactionSignature || !tx.transaction.signatures.every((signature) => isBase58Bytes(signature, 64))) errors.push(prefix + '_SIGNATURE_MISMATCH');
   if (tx.meta.err !== null) errors.push(prefix + '_TRANSACTION_NOT_SUCCESSFUL');
   const accounts = accountKeys(tx.transaction, tx.meta, tx.version, prefix, errors);
   if (!accounts) return null;
