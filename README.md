@@ -31,6 +31,8 @@ The repository includes small zero-dependency public tools rather than documenta
 
 The public code also includes a pure, fail-closed `getTransaction` response classifier with deterministic legacy/v0/v1 fixtures plus a bounded, read-only Devnet transaction helper. The helper remains offline unless both an RPC URL and transaction signature are supplied, verifies the endpoint is Devnet first, then calls `getTransaction` with `maxSupportedTransactionVersion: 1`. It does not connect a wallet, sign or submit transactions, enable Mainnet, or expose private code.
 
+Two additional offline review modules check supplied v1 resource/fee/simulation evidence and classify recovery after an unknown submission result. They include synthetic examples and regression tests for issue #9. Every outcome keeps `sendAuthorized: false`; these are public consistency models, not an enabled trading path. See the [review contract](docs/SOLANA_V1_SEND_SAFETY_DRAFT.md).
+
 ```bash
 git clone https://github.com/CopyPumpApp/CopyPump.git
 cd CopyPump
@@ -51,7 +53,9 @@ See [public contributor tools](tools/README.md). These tools do **not** prove th
 
 We are intentionally keeping the active queue small instead of manufacturing issues purely to create activity.
 
-- **High-value expert review — Solana transaction safety:** [#9 Review safe Solana v1 send-path resource bounds](https://github.com/CopyPumpApp/CopyPump/issues/9) — `help wanted`. The task is not to enable v1 sending. It asks for a fail-closed public safety contract around explicit `transactionConfig` resource limits, absolute-lamport priority-fee caps, simulation invariants, deterministic v0/v1 negative fixtures, and submitted-unknown/idempotency/reconciliation behavior. This review is Devnet-hardening work and is not a CopyPump Mainnet- or v1-send-readiness claim.
+- **Implemented review surface — Solana transaction safety:** [#9](https://github.com/CopyPumpApp/CopyPump/issues/9) now has pure resource-policy and unknown-submission recovery models, synthetic examples and deterministic tests. External runtime review is still welcome. The [contract](docs/SOLANA_V1_SEND_SAFETY_DRAFT.md) explains the policy, trusted-adapter boundary and remaining integration work; no v1 send path is enabled.
+- **Open evidence milestone:** [#2](https://github.com/CopyPumpApp/CopyPump/issues/2) still requires verified real Devnet lifecycle evidence. Passing synthetic tests does not complete that milestone.
+- **Ongoing contributor invitation:** [#13](https://github.com/CopyPumpApp/CopyPump/issues/13) remains available for people interested in helping with public work.
 
 The previous code-first task [#39](https://github.com/CopyPumpApp/CopyPump/issues/39) is complete in [PR #42](https://github.com/CopyPumpApp/CopyPump/pull/42). We are not immediately opening another `good first issue` just to keep the label populated. The next beginner task will be created when it maps to a real public-safe engineering need.
 

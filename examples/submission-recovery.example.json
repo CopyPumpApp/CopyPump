@@ -1,0 +1,44 @@
+{
+  "description": "Synthetic offline Devnet fixture: history lookup returns null after blockhash expiry. committedAtSlot is a trusted observed slot floor captured before possible handoff, not wall-clock time. No real transaction, wallet, signature verification, RPC call or send authorization.",
+  "attempt": {
+    "schemaVersion": 1,
+    "operationId": "example-operation-1",
+    "attemptId": "example-attempt-1",
+    "signature": "1111111111111111111111111111111111111111111111111111111111111111",
+    "messageDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+    "network": "solana-devnet",
+    "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+    "policyRevision": "example-policy-1",
+    "simulationRevision": "example-simulation-1",
+    "stage": "SUBMISSION_UNKNOWN",
+    "committedAtSlot": 1000,
+    "minContextSlot": 1000,
+    "expiry": {
+      "kind": "recent-blockhash",
+      "blockhash": "11111111111111111111111111111111",
+      "lastValidBlockHeight": 2000
+    },
+    "lastObservation": null
+  },
+  "observation": {
+    "operationId": "example-operation-1",
+    "attemptId": "example-attempt-1",
+    "signature": "1111111111111111111111111111111111111111111111111111111111111111",
+    "messageDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+    "network": "solana-devnet",
+    "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+    "policyRevision": "example-policy-1",
+    "simulationRevision": "example-simulation-1",
+    "contextSlot": 4000,
+    "status": null,
+    "blockHeight": 2001,
+    "searchTransactionHistory": true
+  },
+  "expected": {
+    "kind": "unknown_expired",
+    "action": "HOLD",
+    "reservation": "KEEP",
+    "sendAuthorized": false,
+    "replacementAllowed": false
+  }
+}
