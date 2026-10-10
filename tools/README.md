@@ -27,6 +27,17 @@ The decoded JSON-RPC response is passed through `classify-transaction-read-respo
 
 This helper does **not** connect a wallet, sign or submit transactions, retry state-changing operations, support Mainnet, or prove that CopyPump's trading lifecycle is complete.
 
+## Offline v1 resource-policy and recovery models
+
+Issue [#9](https://github.com/CopyPumpApp/CopyPump/issues/9) has two zero-dependency, pure modules:
+
+- `validate-send-safety.mjs` exports `validateSendSafety(input, policy, { nowMs })`. It checks supplied Devnet v1 configuration against measured compute/data use, explicit bounded headroom, exact integer fee caps, message bindings, evidence freshness and a recent-blockhash lifetime. All five evidence/lifetime/current sections explicitly use this model's fixed `confirmed` commitment contract. It returns `POLICY_CONSISTENT` or `HOLD` with static reason codes.
+- `classify-submission-recovery.mjs` exports `classifySubmissionRecovery(attempt, observation)`. It checks the identity and freshness of a receipt for a persisted attempt. Unknown or expired-null outcomes retain the reservation; finalized outcomes request reconciliation and retain the reservation until that accounting is complete.
+
+**Neither module authorizes sending.** Every result has `sendAuthorized: false`; recovery also has `replacementAllowed: false`. They perform no RPC, wallet access, signing, submission, storage or implicit clock reads. They are reference models for normalized JSON, not an RPC adapter or integrated trading guard.
+
+Digests, source labels, lifetime pairing and durable state must come from a separately trusted adapter. The functions check supplied relationships; they do not authenticate those claims. Fee amounts use canonical u64 decimal strings rather than JavaScript numbers. All policy thresholds are explicit caller inputs; fixture settings are synthetic test data. See the [full contract and official sources](../docs/SOLANA_V1_SEND_SAFETY_DRAFT.md).
+
 ## Run it
 
 Requires Node.js 20+ and no third-party packages.
@@ -58,6 +69,26 @@ The transaction-read helper is exercised through deterministic mocked tests in `
 Do not commit provider URLs that contain credentials or API tokens. Errors are intentionally sanitized and do not echo the RPC URL or provider response text.
 
 The example manifest is intentionally `draft` and contains no real transaction evidence.
+
+Run the two offline review examples from the repository root:
+
+```bash
+node --input-type=module <<'JS'
+import { readFileSync } from 'node:fs';
+import { validateSendSafety } from './tools/validate-send-safety.mjs';
+const fixture = JSON.parse(readFileSync('./examples/send-safety.example.json', 'utf8'));
+console.log(validateSendSafety(fixture.input, fixture.policy, { nowMs: fixture.nowMs }));
+JS
+
+node --input-type=module <<'JS'
+import { readFileSync } from 'node:fs';
+import { classifySubmissionRecovery } from './tools/classify-submission-recovery.mjs';
+const fixture = JSON.parse(readFileSync('./examples/submission-recovery.example.json', 'utf8'));
+console.log(classifySubmissionRecovery(fixture.attempt, fixture.observation));
+JS
+```
+
+The first example returns `POLICY_CONSISTENT` with `sendAuthorized: false`. The second returns `unknown_expired`, `HOLD`, `KEEP` and `replacementAllowed: false`. `npm test` runs their deterministic positive and negative cases together with the existing public-tool tests. No synthetic result is real Devnet lifecycle evidence for issue #2.
 
 ## Good contribution directions
 

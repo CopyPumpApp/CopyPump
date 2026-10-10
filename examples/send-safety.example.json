@@ -1,0 +1,106 @@
+{
+  "description": "Synthetic offline policy fixture; no transaction or send permission. These limits are test data, not CopyPump production settings.",
+  "nowMs": 11000,
+  "policy": {
+    "revision": "public-review-1",
+    "pathId": "fixture-swap",
+    "maxComputeUnitLimit": 200000,
+    "computeHeadroomBps": 1000,
+    "maxComputeHeadroomUnits": 20000,
+    "dataGrowthAllowanceBytes": 1,
+    "maxLoadedAccountsDataSizeLimit": 1048576,
+    "maxPriorityFeeLamports": "10000",
+    "maxTotalFeeLamports": "20000",
+    "allowZeroPriorityFee": false,
+    "maxEvidenceAgeMs": 2000,
+    "maxEvidenceSlotLag": 4,
+    "minRemainingBlockHeights": 5
+  },
+  "input": {
+    "schemaVersion": 1,
+    "version": 1,
+    "network": "solana-devnet",
+    "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+    "policyRevision": "public-review-1",
+    "pathId": "fixture-swap",
+    "intentDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "messageDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "computeBudgetInstructionCount": 0,
+    "transactionConfig": {
+      "computeUnitLimit": 110000,
+      "loadedAccountsDataSizeLimit": 65536,
+      "priorityFee": "5000"
+    },
+    "estimation": {
+      "network": "solana-devnet",
+      "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+      "policyRevision": "public-review-1",
+      "pathId": "fixture-swap",
+      "sourceId": "fixture-rpc",
+      "observedAtMs": 10000,
+      "contextSlot": 100,
+      "commitment": "confirmed",
+      "simulationId": "estimate-1",
+      "blockhash": "11111111111111111111111111111111",
+      "intentDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "err": null,
+      "unitsConsumed": 100000,
+      "loadedAccountsDataSize": 32768,
+      "transactionConfig": {
+        "computeUnitLimit": 1400000,
+        "loadedAccountsDataSizeLimit": 67108864,
+        "priorityFee": "5000"
+      }
+    },
+    "finalSimulation": {
+      "network": "solana-devnet",
+      "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+      "policyRevision": "public-review-1",
+      "pathId": "fixture-swap",
+      "sourceId": "fixture-rpc",
+      "observedAtMs": 10500,
+      "contextSlot": 101,
+      "commitment": "confirmed",
+      "simulationId": "final-1",
+      "blockhash": "11111111111111111111111111111111",
+      "intentDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "messageDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "err": null,
+      "unitsConsumed": 105000,
+      "loadedAccountsDataSize": 33000,
+      "transactionConfig": {
+        "computeUnitLimit": 110000,
+        "loadedAccountsDataSizeLimit": 65536,
+        "priorityFee": "5000"
+      }
+    },
+    "feeEstimate": {
+      "network": "solana-devnet",
+      "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+      "policyRevision": "public-review-1",
+      "pathId": "fixture-swap",
+      "sourceId": "fixture-rpc",
+      "observedAtMs": 10500,
+      "contextSlot": 101,
+      "commitment": "confirmed",
+      "messageDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "totalFeeLamports": "10000"
+    },
+    "lifetime": {
+      "kind": "recent-blockhash",
+      "blockhash": "11111111111111111111111111111111",
+      "lastValidBlockHeight": 210,
+      "contextSlot": 99,
+      "commitment": "confirmed"
+    },
+    "current": {
+      "network": "solana-devnet",
+      "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+      "sourceId": "fixture-rpc",
+      "contextSlot": 101,
+      "blockHeight": 200,
+      "observedAtMs": 10800,
+      "commitment": "confirmed"
+    }
+  }
+}
