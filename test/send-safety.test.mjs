@@ -127,7 +127,25 @@ test("budget/fee changes cannot reuse the final simulated configuration", () => 
 });
 
 test("changing blockhash cannot reuse old simulation evidence", () => {
-  const f = fresh(); f.input.lifetime.blockhash = "22222222222222222222222222222222"; hold(f, "SIMULATION_BLOCKHASH_MISMATCH");
+  const f = fresh(); f.input.lifetime.blockhash = "1".repeat(31) + "2"; hold(f, "SIMULATION_BLOCKHASH_MISMATCH");
+});
+
+test("matching blockhash strings with invalid decoded widths cannot pass policy review", () => {
+  for (const blockhash of ["1".repeat(33), "2".repeat(32), "z".repeat(44)]) {
+    const f = fresh();
+    f.input.lifetime.blockhash = f.input.estimation.blockhash = f.input.finalSimulation.blockhash = blockhash;
+    hold(f, "LIFETIME_EVIDENCE_INVALID");
+  }
+});
+
+test("valid blockhashes retain leading-zero bytes and support the printable upper bound", () => {
+  for (const blockhash of ["1".repeat(31) + "2", "2" + "1".repeat(43)]) {
+    const f = fresh();
+    f.input.lifetime.blockhash = f.input.estimation.blockhash = f.input.finalSimulation.blockhash = blockhash;
+    const value = run(f);
+    assert.equal(value.valid, true);
+    assert.equal(value.sendAuthorized, false);
+  }
 });
 
 test("requires a separate final simulation after estimation", () => {

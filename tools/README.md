@@ -12,10 +12,10 @@ It currently validates:
 - the lifecycle contains `BUY`, `POSITION`, `PARTIAL_SELL`, and `FULL_SELL` exactly once;
 - evidence is classified as `onchain` or `application`;
 - a manifest marked `verified` cannot contain simulated or unverified steps;
-- verified on-chain steps include a syntactically plausible Solana transaction signature;
+- verified on-chain steps include a Base58 signature that decodes to exactly 64 bytes;
 - public manifests do not include obvious secret-bearing fields such as private keys, seed phrases, API keys, auth tokens, or cookies.
 
-By default the validator remains fully offline. An optional RPC identity check can be enabled with `--rpc-url`; it calls only Solana JSON-RPC `getGenesisHash`, verifies that the endpoint is Devnet, and uses a bounded timeout. The validator itself does not sign or submit transactions.
+By default the validator remains fully offline. An optional RPC identity check can be enabled with `--rpc-url`; it calls only Solana JSON-RPC `getGenesisHash`, verifies the Devnet genesis result with the matching JSON-RPC request ID, and bounds both fetch and response-body reading. The validator itself does not sign or submit transactions.
 
 A schema-valid manifest or successful cluster identity check does **not** prove that a transaction exists, verify balances, calculate PnL, or certify CopyPump as production-ready. Validator results explicitly include `verificationScope: "MANIFEST_SCHEMA_ONLY"` and `lifecycleVerified: false`, even if a submitted manifest labels itself `verified`. These tools are only a public base for independent verification work.
 
@@ -23,9 +23,17 @@ A schema-valid manifest or successful cluster identity check does **not** prove 
 
 `read-devnet-transaction.mjs` provides a bounded, read-only transaction lookup helper for public verification tooling. It remains offline unless both an RPC URL and transaction signature are supplied, verifies the endpoint is Solana Devnet first, then calls `getTransaction` with `maxSupportedTransactionVersion: 1` and a bounded timeout.
 
-The decoded JSON-RPC response is passed through `classify-transaction-read-response.mjs`, which distinguishes successful reads, `result: null`, RPC `-32015`, on-chain failures (`meta.err`), other RPC errors, and malformed responses without reflecting provider error text into normalized output.
+The JSON-RPC envelope must match its request ID. A returned transaction must have the requested first signature, valid 64-byte signatures and an explicit legacy/v0/v1 version. The decoded JSON-RPC response is passed through `classify-transaction-read-response.mjs`, which distinguishes successful reads, `result: null`, RPC `-32015`, on-chain failures (`meta.err`), other RPC errors, and malformed responses without reflecting provider error text into normalized output.
 
-This helper does **not** connect a wallet, sign or submit transactions, retry state-changing operations, support Mainnet, or prove that CopyPump's trading lifecycle is complete.
+This helper does **not** connect a wallet, sign or submit transactions, retry state-changing operations, support Mainnet, or prove that CopyPump's trading lifecycle is complete. Every result includes `verificationScope: "TRANSACTION_READ_CLASSIFICATION"`, `lifecycleVerified: false` and `sendAuthorized: false`. Its `confirmed` request contract remains distinct from the lifecycle verifier's `finalized` reads. A `not_found` classification does not prove non-execution.
+
+### Shared read boundaries
+
+The identity check, single-transaction helper and lifecycle collector use `bounded-json-rpc.mjs`. It accepts only `getGenesisHash`, `getTransaction` and `getSignatureStatuses`; it has no retry or state-changing method. HTTPS is required, embedded username/password and URL fragments are rejected, redirects are disabled, and failures never echo provider text or URLs.
+
+Each request bounds fetch **and** streamed body reading to 100–30,000 ms (default 5,000), at most 1,000,000 UTF-8 bytes and 4,096 nonempty chunks. JavaScript callers may lower `maxResponseBytes`, not raise the cap. A stalled/abort-ignoring transport still returns timeout; a late response is cancelled. These are read-transport limits, not transaction-expiry or trading-policy defaults. Injected test transports must provide a streaming `Response`; there is no unbounded `json()` fallback.
+
+`base58.mjs` supplies the shared structural 32/64-byte check used by manifests, policy/recovery models and readers. Exact decoded width is not cryptographic verification or proof that a signature exists on-chain.
 
 ## Offline v1 resource-policy and recovery models
 
