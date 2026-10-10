@@ -32,6 +32,8 @@ The previous code-first task, [#39](https://github.com/CopyPumpApp/CopyPump/issu
 
 The design/fixture contribution for [#9](https://github.com/CopyPumpApp/CopyPump/issues/9) is implemented as two pure public review modules with synthetic examples and deterministic tests. Experienced Solana transaction/runtime engineers can now challenge executable resource bounds and recovery semantics; see the [review contract](docs/SOLANA_V1_SEND_SAFETY_DRAFT.md) and [run instructions](tools/README.md). External review remains welcome, and no signing or submission path is enabled. Verified real Devnet lifecycle evidence in [#2](https://github.com/CopyPumpApp/CopyPump/issues/2) remains a separate open milestone; [#13](https://github.com/CopyPumpApp/CopyPump/issues/13) is the ongoing contributor invitation.
 
+Issue #2 now includes a [bounded finalized-receipt verifier](docs/DEVNET_LIFECYCLE_VERIFICATION.md). Contributors can review its exact account/amount/fee checks and add focused regressions without a wallet. Real evidence publication still requires reviewed transaction origins, swap interpretation, accounting and application reconciliation; synthetic examples never satisfy that milestone.
+
 If you want to contribute but neither path matches your skills, open an issue titled **`Contributor intro: <your area>`** and briefly describe what you build, test, research, or use. We can then point you to a public-safe slice instead of inventing low-value work.
 
 If you are not ready to write code, useful feedback is still valuable. Reproducible UX, performance, documentation, Devnet, and product observations are welcome.

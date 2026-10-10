@@ -17,7 +17,7 @@ It currently validates:
 
 By default the validator remains fully offline. An optional RPC identity check can be enabled with `--rpc-url`; it calls only Solana JSON-RPC `getGenesisHash`, verifies that the endpoint is Devnet, and uses a bounded timeout. The validator itself does not sign or submit transactions.
 
-A schema-valid manifest or successful cluster identity check does **not** prove that a transaction exists, verify balances, calculate PnL, or certify CopyPump as production-ready. These tools are only a public base for independent verification work.
+A schema-valid manifest or successful cluster identity check does **not** prove that a transaction exists, verify balances, calculate PnL, or certify CopyPump as production-ready. Validator results explicitly include `verificationScope: "MANIFEST_SCHEMA_ONLY"` and `lifecycleVerified: false`, even if a submitted manifest labels itself `verified`. These tools are only a public base for independent verification work.
 
 ## Read-only Devnet transaction helper
 
@@ -101,3 +101,27 @@ Useful follow-up contributions include:
 - security review of future transaction-policy validation before any signing/submission capability is considered.
 
 Keep all additions Devnet-only unless the public project status explicitly changes. Never place secrets, private wallet data, production credentials, or sensitive internal traces in public fixtures.
+
+## Devnet tracked-account receipt verifier
+
+`reconcile-devnet-lifecycle.mjs` exports the pure `reconcileDevnetLifecycle(manifest, evidence)` function and `validateLifecycleManifest(manifest)`. `verify-devnet-lifecycle.mjs` exports `verifyDevnetLifecycle({ manifest, rpcUrl, timeoutMs, maxResponseBytes })` and provides a CLI. Its separate manifest tracks one preexisting classic SPL Token account across three distinct signatures and the expected `0 → BUY balance → partial balance → 0` sequence.
+
+The CLI is offline unless `--rpc-url` or `COPYPUMP_DEVNET_RPC_URL` explicitly supplies an HTTPS endpoint. Online collection makes at most five read-only JSON-RPC calls over HTTP POST: Devnet genesis identity, historical statuses, then three finalized raw-JSON transactions with `maxSupportedTransactionVersion: 1`. Each request has a 100–30,000 ms deadline (default 5,000 ms) and a response cap of 1,000,000 bytes and 4,096 nonempty chunks. It does not retry, sign or send transactions.
+
+Run offline, clearing any inherited endpoint:
+
+```bash
+COPYPUMP_DEVNET_RPC_URL= node tools/verify-devnet-lifecycle.mjs \
+  examples/devnet-lifecycle.example.json
+```
+
+This returns `DEVNET_LIFECYCLE_READ_SKIPPED`; exit code `0` means only that the manifest passed. For actual reads, replace the path with your reviewed manifest containing real Devnet signatures:
+
+```bash
+node tools/verify-devnet-lifecycle.mjs ./reviewed-devnet-lifecycle.json \
+  --rpc-url https://api.devnet.solana.com --rpc-timeout-ms 5000
+```
+
+The [full contract and runnable pure example](../docs/DEVNET_LIFECYCLE_VERIFICATION.md) explain the two synthetic fixtures, exact token arithmetic, safe-integer RPC lamports, request/signature bindings and versioned account ordering. Missing pre/post token entries, creation/closure, Token-2022, unsafe numeric RPC amounts and unresolved same-slot order require further work.
+
+`RECEIPTS_MATCH_EXPECTATIONS` verifies only the declared account effects against supplied receipts. `lifecycleVerified`, `tradeSemanticsVerified`, `walletWideBalanceVerified`, `pnlVerified` and `sendAuthorized` remain `false`; operation IDs are caller claims. Synthetic examples and internal AI-assisted review do not provide real lifecycle evidence or an external audit. Public [issue #2](https://github.com/CopyPumpApp/CopyPump/issues/2) remains open.

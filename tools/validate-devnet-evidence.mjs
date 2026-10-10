@@ -47,7 +47,7 @@ export function validateEvidenceManifest(manifest) {
   const warnings = [];
 
   if (!isObject(manifest)) {
-    return { ok: false, errors: ['manifest must be a JSON object'], warnings };
+    return { ok: false, errors: ['manifest must be a JSON object'], warnings, verificationScope: 'MANIFEST_SCHEMA_ONLY', lifecycleVerified: false };
   }
 
   if (manifest.schemaVersion !== 1) {
@@ -136,7 +136,7 @@ export function validateEvidenceManifest(manifest) {
 
   scanForSensitiveFields(manifest, '$', errors);
 
-  return { ok: errors.length === 0, errors, warnings };
+  return { ok: errors.length === 0, errors, warnings, verificationScope: 'MANIFEST_SCHEMA_ONLY', lifecycleVerified: false };
 }
 
 export async function verifyDevnetRpcIdentity({
@@ -211,6 +211,8 @@ export async function validateEvidenceWithOptionalRpc(manifest, options = {}) {
     ok: schemaResult.ok && rpc.ok,
     errors,
     warnings: [...schemaResult.warnings],
+    verificationScope: 'MANIFEST_SCHEMA_ONLY',
+    lifecycleVerified: false,
     rpc
   };
 }

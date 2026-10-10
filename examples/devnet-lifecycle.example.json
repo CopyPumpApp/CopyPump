@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "network": "solana-devnet",
+  "owner": "11111111111111111111111111111112",
+  "positionMint": "11111111111111111111111111111113",
+  "positionTokenAccount": "11111111111111111111111111111114",
+  "decimals": 6,
+  "position": {
+    "afterOperationId": "buy-1",
+    "rawAmount": "1000000"
+  },
+  "trades": [
+    {
+      "step": "BUY",
+      "operationId": "buy-1",
+      "transactionSignature": "1111111111111111111111111111111111111111111111111111111111111112",
+      "expectedPreAmount": "0",
+      "expectedPostAmount": "1000000",
+      "expectedFeeLamports": "5000",
+      "expectedOwnerLamportDelta": "-100005000"
+    },
+    {
+      "step": "PARTIAL_SELL",
+      "operationId": "partial-1",
+      "transactionSignature": "1111111111111111111111111111111111111111111111111111111111111113",
+      "expectedPreAmount": "1000000",
+      "expectedPostAmount": "600000",
+      "expectedFeeLamports": "5000",
+      "expectedOwnerLamportDelta": "39995000"
+    },
+    {
+      "step": "FULL_SELL",
+      "operationId": "full-1",
+      "transactionSignature": "1111111111111111111111111111111111111111111111111111111111111114",
+      "expectedPreAmount": "600000",
+      "expectedPostAmount": "0",
+      "expectedFeeLamports": "5000",
+      "expectedOwnerLamportDelta": "59995000"
+    }
+  ]
+}
